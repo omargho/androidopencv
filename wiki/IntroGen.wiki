@@ -1,0 +1,18 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Dans le cadre de notre projet de fin d’études à Polytech'lille, Romain Proyart et moi (Olympe Kassa) avons choisi de travailler au développement d'une application de reconnaissance d'oeuvre d'art pour musée.
+
+
+= Details =
+
+La plupart des services basés sur la localisation utilisent les données GPS pour situer un utilisateur et lui fournir des informations localisées. Toutefois le signal GPS peut être imprécis voir absent notamment en intérieur. D'autre technologies peuvent prendre le relais : bluetooth, localisation Wifi, QR code... Elles imposent toutefois un équipement des locaux qui peut être difficile dans certains cadres tels que les musées. Pour cette raison on s'intéresse ici à l'utilisation de la reconnaissance de formes comme base de l'identification des oeuvres afin de récupérer les informations pertinentes. Pour cela, il sera nécessaire d'identifier les librairies disponibles pour Android (par ex. OpenCV) et de choisir la plus appropriée afin de développer un prototype permettant de tester la qualité de la reconnaissance et les conditions limites (éclairage, angle de vue...).
+ 
+= Outils mis en utilisés =
+
+Environnement de travail: Développement sur Android (HTC Hero), langage dépendant de la libraire choisie (java, C/C++). 
+
+= Plan = 
+
+== Méthode de travail ==
