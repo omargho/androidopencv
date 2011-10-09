@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Dans le cadre de notre projet de fin d’études à Polytech'lille, Romain Proyart et moi (Olympe Kassa) avons choisi de travailler au développement d'une application de reconnaissance d'oeuvre d'art pour musée.
+Dans le cadre de notre projet de fin d’études à Polytech'lille, nous avons choisi de travailler au développement d'une application de reconnaissance d'oeuvre d'art pour musée.
 
 
 = Details =
