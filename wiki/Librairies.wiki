@@ -1,0 +1,13 @@
+#summary Librairies
+#labels librairies,OpenCV
+
+= Librairies =
+
+Ici toutes les informations concernant les différentes librairies de reconnaissance d'images que l'on a pu étudier / tester.
+
+== OpenCV ==
+
+OpenCV est une librairie gratuite, développée en C/C++, d'autres langages, et récemment en Java (une version bêta).
+http://opencv.willowgarage.com/wiki/
+
+
