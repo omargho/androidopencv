@@ -7,6 +7,6 @@ Le développement est réalisé en Java sous Eclipse Hélios : http://www.eclips
 avec le SDK Google Android : http://developer.android.com/sdk/index.html
 
 Les tests sont effectués sur un téléphone HTC Wildfire S et un SFR Starshine.
-Il est possible d'utiliser un AVD (Android Virtual Device) pour développer sans se munir d'un téléphone, mais dans notre cas, pour tester les fonctionnalités d'OpenCV il est préférable d'utiliser le capteur photographique d'un téléphone réel.
+Il est possible d'utiliser un AVD (Android Virtual Device) pour développer sans se munir d'un téléphone, mais dans notre cas, pour tester les fonctionnalités des librairies mettant à profit le capteur photographique, il est préférable d'utiliser celui d'un téléphone réel.
 Pour envoyer directement le programme sur le téléphone, nous employons la procédure décrite ici :
 http://developer.android.com/guide/developing/device.html
