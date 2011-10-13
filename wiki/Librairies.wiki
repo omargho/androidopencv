@@ -9,6 +9,7 @@ Ici toutes les informations concernant les différentes librairies de reconnaiss
 
 OpenCV est une librairie gratuite, développée en C/C++, d'autres langages, et récemment en Java (une version bêta).
 http://opencv.willowgarage.com/wiki/
+Elle implémente plus de 500 fonctions de traitement d'images : General Image Processing Functions, Image Pyramids, Segmentations, Geometrics Descriptors, Camera Calibration / Stereo / 3D, Transforms, Features, Utilities and Data Structures, Machine Learning (Recognition, Detection), tracking, fitting.
 
 L'installation de la version Java sous Eclipse est décrite ici : http://opencv.itseez.com/doc/tutorials/introduction/android_binary_package/android_binary_package.html
 
