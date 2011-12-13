@@ -1,10 +1,13 @@
 package data.base.picture.activities;
 
 
+import java.util.Locale;
+
 import data.base.picture.R;
 import data.base.picture.services.serviceFeature;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +20,7 @@ public class DataBasePicture extends Activity {
 		
 
     static boolean mBound = false;
+    public static  SQLiteDatabase db;
     /** Called when the activity is first created. */
     @Override
     
@@ -42,6 +46,19 @@ public class DataBasePicture extends Activity {
 				startService(new Intent(DataBasePicture.this, serviceFeature.class));				
 			}
     	});
+    	    
+        db = openOrCreateDatabase("TestingData.db", SQLiteDatabase.CREATE_IF_NECESSARY, null);
+        db.setVersion(1);
+        db.setLocale(Locale.getDefault());
+        db.setLockingEnabled(true);
+        
+        final String CREATE_TABLE_DESCRIPTORS =
+        	"CREATE TABLE tbl_descriptors ("
+        	+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        	+ "country_name TEXT);";
+        db.execSQL(CREATE_TABLE_DESCRIPTORS);
+        
+    	
     }
     
 }
