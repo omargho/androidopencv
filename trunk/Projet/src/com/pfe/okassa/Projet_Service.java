@@ -1,18 +1,21 @@
 package com.pfe.okassa;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+
 
 import org.opencv.core.Mat;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.KeyPoint;
 
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Intent;
-import android.os.AsyncTask;
+//import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
@@ -24,7 +27,7 @@ public class Projet_Service extends Service {
 	Message message;
 	final static String MY_ACTION = "MY_ACTION";
 	String initData;	
-	Semaphore sem = new Semaphore(1);
+	
 	
 	
 	List<KeyPoint> k = new ArrayList<KeyPoint>() ;
@@ -83,13 +86,11 @@ public class Projet_Service extends Service {
 			
 			if(detector.empty() == true)
 			{
-			
 			       intent.putExtra("DETECTFEATURES", "le descripteur est null... ");
 			       sendBroadcast(intent);
 			}
 			else
-			{
-									
+			{					
 			       intent.putExtra("DETECTFEATURES", "on peut commencer le detection");
 			       sendBroadcast(intent);
 				  
@@ -97,15 +98,13 @@ public class Projet_Service extends Service {
 			      
 				
 				if(keyPoints.isEmpty() == true)
-				{
-					
+				{	
 					 intent.putExtra("DETECTFEATURES", "les points d'interets n'ont pas été detectés correctement...");				 
 				     sendBroadcast(intent);
 					
 				}
 				else
-				{
-				
+				{	
 					 intent.putExtra("DETECTFEATURES", "les points d'interets ont été detectés... et on a : "+ keyPoints.size());
 				     sendBroadcast(intent);
 				}
@@ -160,55 +159,104 @@ public class Projet_Service extends Service {
 			
 	}
 	
-//=================================== ASYNC TASK ============================================================
-  	
-  	 class LongOperation extends AsyncTask<String, Void, Boolean> {
-  		
-  		Intent intent = new Intent();
-	   // intent.setAction(MY_ACTION);
-  		List<KeyPoint> k ;  
-  		 
-  	  @Override
-  	  protected Boolean doInBackground(String... params) {
-  	    // perform long running operation operation
-  		k =  detectFeatures(Projet_Service.this.img) ;
-  	    return true;
-  	  }
   	 
-  	  /* (non-Javadoc)
-  	   * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
-  	   */
-  	  @Override
-  	  protected void onPostExecute(Boolean result) {
-  	    // execution of result of Long time consuming operation
-  		intent.putExtra("DETECTFEATURES", "onPostExecute... ");
-	 	sendBroadcast(intent);
-	 	
-	   	  }
   	 
-  	  /* (non-Javadoc)
-  	   * @see android.os.AsyncTask#onPreExecute()
-  	   */
-  	  @Override
-  	  protected void onPreExecute() {
-  	  // Things to be done before execution of long running operation. For example showing ProgessDialog
-  		intent.putExtra("DETECTFEATURES", "onPreExecute... ");
-	 	sendBroadcast(intent);
-	 	
-  	  }
+ 	/**
+ 	 * Cette methode nous permet de convertir un objet en 
+ 	 * en byte dans notre cas il s'agit de récuperer l'
+ 	 * élément m(i,j) de notre matrice.
+ 	 * 
+ 	 * @param obj
+ 	 * @return
+ 	 * @throws IOException
+ 	 * 
+ 	 * @author Olympe Kassa
+ 	 * 
+ 	 * 
+ 	 * 
+ 	 */
+ 	
+ 	public byte[] toByteArray (Object obj)
+ 	{
+ 	  byte[] bytes = null;
+ 	  ByteArrayOutputStream bos = new ByteArrayOutputStream();
+ 	  try {
+ 	    ObjectOutputStream oos = new ObjectOutputStream(bos); 
+ 	    oos.writeObject(obj);
+ 	    oos.flush(); 
+ 	    oos.close(); 
+ 	    bos.close();
+ 	    bytes = bos.toByteArray ();
+ 	  }
+ 	  catch (IOException ex) {
+ 	    //TODO: Handle the exception
+ 	  }
+ 	  return bytes;
+ 	}
   	 
-  	  /* (non-Javadoc)
-  	   * @see android.os.AsyncTask#onProgressUpdate(Progress[])
-  	   */
-  	  @Override
-  	  protected void onProgressUpdate(Void... values) {
-  	      // Things to be done while execution of long running operation is in progress. For example updating ProgessDialog
-  	   }
-  	}
-  	
-  	//===========================================================================================================
+ 	/**
+ 	 *	Cette methode nous permet de convertir une matrice 
+ 	 * tableau d'objet de bytes dans notre cas il 
+ 	 * s'agit de récuperer notre matrice et de mettre ses 
+ 	 * éléments de type byte dans un tableau.
+ 	 * 
+ 	 *  @author Olympe Kassa
+ 	 * 
+ 	 * @param mat
+ 	 * @return
+ 	 */
+ 	
+ 	public List<byte[]>  toByteArrayGlob (Mat mat)
+ 	{
+ 	  List<byte[]> bytes = new ArrayList<byte[]>();
+ 	  
+ 	  int m=mat.height() ;
+ 	  int n = mat.width() ;
+ 	  int i,j;
+ 	  
+ 	  for(i=0;i<m;i++)
+ 	  {
+ 		  for(j=0;j<n;j++)
+ 		  {
+ 			 bytes.add(toByteArray(mat.get(i, j))) ;  
+ 		  }
+ 	  }	 
+ 			return bytes;
+ 	}
+ 	
+ 	/**
+ 	 * Cette methode nous permet de convertir une liste de  bytearray
+ 	 * en Matrice de pouvoir la reutiliser avec le kNN par exemple
+ 	 * 
+ 	 * @param bytes
+ 	 * @return
+ 	 * 
+ 	 * @author Olympe Kassa
+ 	 * 
+ 	 */
+ 	    
+ 	public Mat toMatrice(List<byte[]> bytes,int n) throws IOException, ClassNotFoundException
+ 	{
+ 	 
+ 	  int j=0 ;
+ 	  int i=0;
+ 	  int k=0;
+ 	  Mat mat = new Mat() ;
+ 	  Iterator<byte[]> iter = bytes.iterator();
+	  	while(iter.hasNext())
+	  	{
+	  		while(j<n)
+	  		{
+		  		mat.put(i, j, bytes.get(k)) ;
+		  		k++;
+		  		j++;
+	  		}
+	  		  i++ ;
 
-	
+	  	}
+ 	  return mat;
+ 	} 
+  	 
 	
 	public class MyThread extends Thread{
 		 
@@ -217,10 +265,7 @@ public class Projet_Service extends Service {
 		  // TODO Auto-generated method stub
 			 
 		 try{
-				 				 
-				 
-			  new LongOperation().execute() ;
-				 
+			 k =  detectFeatures(Projet_Service.this.img) ;
 				 // appel de la base de données
 			 }
 			 catch(Exception e)

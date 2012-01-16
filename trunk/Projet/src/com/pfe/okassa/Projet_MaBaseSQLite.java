@@ -16,7 +16,9 @@ public class Projet_MaBaseSQLite extends SQLiteOpenHelper {
 	private static final String COL_IMAGE = "IMAGE_BLOB";
 	private static final String COL_DESC1 = "DESC1_BLOB";
 	private static final String COL_DESC2 = "DESC2_BLOB";
-	
+	private static final String COL_M = "M";
+	private static final String COL_N = "N";
+	private static final String COL_INFO = "INFO";
 	
     private final Context context ;
  
@@ -44,7 +46,8 @@ public class Projet_MaBaseSQLite extends SQLiteOpenHelper {
 	}
 
 	private static final String CREATE_BDD = "CREATE TABLE " + TABLE_IMAGES + " ("
-	+ COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_IMAGE + " BLOB," + COL_DESC1 + " BLOB,"+ COL_DESC2 + " BLOB); "
+	+ COL_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_IMAGE + "BLOB," + COL_DESC1 +
+	" BLOB,"+ COL_DESC2 + "BLOB," + COL_M + "INTEGER,"+ COL_N + "INTEGER,"+ COL_INFO + "TEXT); "
 	;
 
 	public Projet_MaBaseSQLite(Context context, String name, CursorFactory factory,int version) {
