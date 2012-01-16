@@ -33,6 +33,9 @@ public class Projet_ImagesBDD {
 	private static final String COL_IMAGE = "IMAGE_BLOB";
 	private static final String COL_DESC1 = "DESC1_BLOB";
 	private static final String COL_DESC2 = "DESC2_BLOB";
+	private static final String COL_M = "M";
+	private static final String COL_N = "N";
+	private static final String COL_INFO = "INFO";
 	
 	
 	private SQLiteDatabase bdd;
@@ -99,7 +102,8 @@ public class Projet_ImagesBDD {
 		//(qui est le nom de la colonne dans laquelle
 		//on veut mettre la valeur)
 		values.put(COL_IMAGE, projet_Image.getBlob());
-		values.put(COL_DESC1, projet_Image.getBlob());
+		values.put(COL_DESC1, projet_Image.getDesc1());
+		values.put(COL_DESC2, projet_Image.getDesc2());
 		//on insère l'objet dans la BDD via le ContentValues
 		return bdd.insert(TABLE_IMAGES, null, values);
 	}
@@ -162,6 +166,11 @@ public class Projet_ImagesBDD {
 				result.moveToNext();
 			}
 			result.close();
+		case 3:
+			/**
+			 * On doit rajouter les requetes pour recuperer m et n 
+			 */
+
 		default :
 			list_bb = null ;
 		}

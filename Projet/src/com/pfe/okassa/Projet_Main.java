@@ -45,7 +45,18 @@ public class Projet_Main extends Activity {
    		
    	}
 
-	    /** Called when the activity is first created. */
+	//=================================================================================================
+  	
+  	
+  	
+  		
+  	
+  	
+  	
+  	//==================================================================================================
+  	
+  	  	
+  	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +94,6 @@ public class Projet_Main extends Activity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		
 				
 		//Register BroadcastReceiver
 	      //to receive event from our service
