@@ -34,7 +34,7 @@ public class Projet_Main extends Activity {
 	LayoutInflater controlInflater = null;
 	Message message ;
 	MyReceiver myReceiver;
-	public  Mat img ;
+	public static Mat img;
 	public ProgressDialog mProgressDialog;
 	
   	public void loadImage(Mat img)
@@ -105,18 +105,13 @@ public class Projet_Main extends Activity {
 	   		@Override
 	        public void onClick(View v) {
 	           	  
-	   			//Mat img = ProjetView.mRgba ;
-	   			Bitmap bmp = ProjetView.bmp ;
-	   			      
-	   			Mat img =  Utils.bitmapToMat(bmp) ;
-	             	   			
-	           	 //Highgui.imwrite("/mnt/sdcard/DCIM/Camera/picture.bmp", img) ;
-	           	 loadImage(img) ;     
+	   			 Mat img = ProjetView.mRgba ;
+	   		   	 loadImage(img) ;     
 	           	 Intent i= new Intent(Projet_Main.this, Projet_Service.class);
 	           	
-	           	// i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 
-	            // startService(i) ;      	 
-	                }
+	           	 i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 
+	             startService(i) ;      	 
+	               }
 	          });
 	}
 
