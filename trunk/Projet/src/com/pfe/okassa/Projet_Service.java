@@ -265,7 +265,7 @@ public class Projet_Service extends Service {
 		  // TODO Auto-generated method stub
 			 
 		 try{
-			// k =  detectFeatures(Projet_Main.this.img) ;
+			 k =  detectFeatures(Projet_Main.img) ;
 				 // appel de la base de données
 			 }
 			 catch(Exception e)
