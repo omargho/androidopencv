@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 
 class ProjetView extends ProjetViewBase {
     public static Mat mRgba;
+    public static Bitmap bmp;
     
     Imgproc imgproc;
 
@@ -35,8 +36,7 @@ class ProjetView extends ProjetViewBase {
         
         capture.retrieve(mRgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA);
         
-        Bitmap bmp = Bitmap.createBitmap(mRgba.cols(), mRgba.rows(), Bitmap.Config.ARGB_8888);
- 
+        bmp = Bitmap.createBitmap(mRgba.cols(), mRgba.rows(), Bitmap.Config.ARGB_8888);
         
         if (Utils.matToBitmap(mRgba, bmp))
             return bmp;
