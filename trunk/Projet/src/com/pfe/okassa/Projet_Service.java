@@ -31,7 +31,7 @@ public class Projet_Service extends Service {
 	
 	
 	List<KeyPoint> k = new ArrayList<KeyPoint>() ;
-	Mat img ;	
+	public Mat img ;	
 	
 	@Override
 	public void onCreate() {
@@ -265,7 +265,7 @@ public class Projet_Service extends Service {
 		  // TODO Auto-generated method stub
 			 
 		 try{
-			 k =  detectFeatures(Projet_Service.this.img) ;
+			// k =  detectFeatures(Projet_Main.this.img) ;
 				 // appel de la base de données
 			 }
 			 catch(Exception e)

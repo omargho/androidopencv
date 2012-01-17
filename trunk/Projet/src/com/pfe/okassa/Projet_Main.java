@@ -1,6 +1,13 @@
 package com.pfe.okassa;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
+import org.opencv.highgui.VideoCapture;
+
 import com.pfe.okassa.Projet_Service;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,41 +34,32 @@ public class Projet_Main extends Activity {
 	LayoutInflater controlInflater = null;
 	Message message ;
 	MyReceiver myReceiver;
-	public Mat img ;
+	public  Mat img ;
 	public ProgressDialog mProgressDialog;
 	
-  	public void loadImage(Mat imgName)
+  	public void loadImage(Mat img)
    	{
-	
    		Toast.makeText(getBaseContext(),"Chargement de l'image... ", Toast.LENGTH_LONG).show();
    				   		
-   		if ( imgName.empty() == true)
+   		
+   		if ( img.empty() == true)
    		{	
    			Toast.makeText(getBaseContext(),"Chargement echec... ", Toast.LENGTH_LONG).show();
    		}
    		else 
    		{
-   			Toast.makeText(getBaseContext(),"Chargement de l'image succes... ", Toast.LENGTH_LONG).show();  		
-   		}
-   		
+   			Toast.makeText(getBaseContext(),"Chargement de l'image succes... ", Toast.LENGTH_LONG).show();  
+   			
+   		}	
    	}
 
-	//=================================================================================================
-  	
-  	
-  	
-  		
-  	
-  	
-  	
-  	//==================================================================================================
-  	
+	
   	  	
   	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
         
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
@@ -75,18 +74,16 @@ public class Projet_Main extends Activity {
         this.addContentView(viewControl, layoutParamsControl);
         
       //Création d'une instance de ma classe ImagesBDD
-        Projet_ImagesBDD imageBdd = new Projet_ImagesBDD(this);
+       // Projet_ImagesBDD imageBdd = new Projet_ImagesBDD(this);
  
         //Création d'un image
-        Projet_Image image = new Projet_Image(null, null, null);
+        //Projet_Image image = new Projet_Image(null, null, null);
  
         //On ouvre la base de données pour écrire dedans
-        imageBdd.open();
+        //imageBdd.open();
         //On insère l'image que l'on vient de créer
        // imageBdd.insertImage(image);
-  
-        
-        
+      
     }
       
     
@@ -101,21 +98,26 @@ public class Projet_Main extends Activity {
 	      IntentFilter intentFilter = new IntentFilter();
 	      intentFilter.addAction(Projet_Service.MY_ACTION);
 	      registerReceiver(myReceiver, intentFilter);
-		
+	      Bundle b = new Bundle();
+	      
 	       ((Button)findViewById(R.id.mbuttonAnalyse)).setOnClickListener(new View.OnClickListener(){
 	    	   
 	   		@Override
 	        public void onClick(View v) {
 	           	  
-	           	 img = ProjetView.mRgba;
+	   			//Mat img = ProjetView.mRgba ;
+	   			Bitmap bmp = ProjetView.bmp ;
+	   			      
+	   			Mat img =  Utils.bitmapToMat(bmp) ;
+	             	   			
+	           	 //Highgui.imwrite("/mnt/sdcard/DCIM/Camera/picture.bmp", img) ;
 	           	 loadImage(img) ;     
 	           	 Intent i= new Intent(Projet_Main.this, Projet_Service.class);
-	           	 i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 
-	             startService(i) ;
-	           	 
+	           	
+	           	// i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 
+	            // startService(i) ;      	 
 	                }
 	          });
-	      
 	}
 
 
@@ -132,16 +134,13 @@ public class Projet_Main extends Activity {
     	 public void onReceive(Context arg0, Intent arg1) {
     	  // TODO Auto-generated method stub
     	  
-    	 
     	  String orgData = arg1.getStringExtra("DETECTFEATURES");
     	  
     	  Toast.makeText(Projet_Main.this,
     	    "Triggered by the Computing Service : !\n"
     	    + orgData,
     	    Toast.LENGTH_LONG).show();
-    	  
-    	 }
-    	 
+    	   }
     	}
               
 }
