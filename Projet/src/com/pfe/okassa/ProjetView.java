@@ -7,9 +7,12 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.provider.MediaStore.Images;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 class ProjetView extends ProjetViewBase {
     public static Mat mRgba;
@@ -37,7 +40,7 @@ class ProjetView extends ProjetViewBase {
         capture.retrieve(mRgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA);
         
         bmp = Bitmap.createBitmap(mRgba.cols(), mRgba.rows(), Bitmap.Config.ARGB_8888);
-        
+                
         if (Utils.matToBitmap(mRgba, bmp))
             return bmp;
         
@@ -47,7 +50,12 @@ class ProjetView extends ProjetViewBase {
     	
     }
 
-    @Override
+    public ContentResolver getContentResolver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
     public void run() {
         super.run();
 
