@@ -12,19 +12,13 @@
     android:id="@+id/mtext"
     android:gravity="center"
     android:text=""/>
-
-  <ProgressBar
-      android:id="@+id/progressBar1"
-      style="?android:attr/progressBarStyleHorizontal"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content" />
        
     <Button 
     android:id="@+id/mbuttonAnalyse" 
     android:text="Analyse" 
 	android:layout_gravity="bottom" 
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content">
+	android:layout_width="100px"
+	android:layout_height="50px">
 	</Button>
 	
 
