@@ -115,15 +115,15 @@ public class Projet_Main extends Activity {
         this.addContentView(viewControl, layoutParamsControl);
         
         //Création d'une instance de ma classe ImagesBDD
-        // Projet_ImagesBDD imageBdd = new Projet_ImagesBDD(this);
+         Projet_ImagesBDD imageBdd = new Projet_ImagesBDD(this);
  
         //Création d'un image
-        //Projet_Image image = new Projet_Image(null, null, null);
+          Projet_Image image = new Projet_Image(null, null, null);
  
         //On ouvre la base de données pour écrire dedans
-        //imageBdd.open();
+          imageBdd.open();
         //On insère l'image que l'on vient de créer
-        // imageBdd.insertImage(image);
+          imageBdd.insertImage(image);
       
     }
       
@@ -149,8 +149,7 @@ public class Projet_Main extends Activity {
 	   			click = true ;
 	   			
 	   			Toast.makeText(getBaseContext(),"Picture saved... ", Toast.LENGTH_LONG).show();
-	   			//img = loadImage(path_) ;
-	   			
+	   				   			
 	           	 Intent i= new Intent(Projet_Main.this, Projet_Service.class);
 	           	 Toast.makeText(getBaseContext(),"Starting service... ", Toast.LENGTH_LONG).show();
 	           	 i.putExtra("INIT_DATA", "Picture passed from Activity to Service in startService"); 
