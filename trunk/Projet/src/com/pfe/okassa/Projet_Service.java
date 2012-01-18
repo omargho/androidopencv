@@ -12,10 +12,12 @@ import org.opencv.core.Mat;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.KeyPoint;
+import org.opencv.highgui.Highgui;
 
 import android.app.Service;
 import android.content.Intent;
 //import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
@@ -61,21 +63,30 @@ public class Projet_Service extends Service {
 		return null;
 	} 
 
-	public void loadImage(Mat img)
+	public Mat loadImage(String imgName)
    	{
-   		Toast.makeText(getBaseContext(),"Chargement de l'image... ", Toast.LENGTH_LONG).show();
-   				   		
+   		
+   		   Intent intent = new Intent();
+	       intent.setAction(MY_ACTION);
+	      
+	       intent.putExtra("DETECTFEATURES", "Chargement de l'image Service... ");
+	       sendBroadcast(intent);
+   		
+   		Mat img = Highgui.imread(imgName) ;
    		
    		if ( img.empty() == true)
    		{	
-   			Toast.makeText(getBaseContext(),"Chargement echec... ", Toast.LENGTH_LONG).show();
+   		   intent.putExtra("DETECTFEATURES", "Chargement echec service...");
+	       sendBroadcast(intent);
+   			
    		}
    		else 
    		{
-   			Toast.makeText(getBaseContext(),"Chargement de l'image succes... ", Toast.LENGTH_LONG).show();  
-   			
-   		}	
-   	}
+   		   intent.putExtra("DETECTFEATURES", "Chargement de l'image Service OK... ");
+	       sendBroadcast(intent);
+   		}
+		return img;	
+	}
 
 	
 	
@@ -283,9 +294,11 @@ public class Projet_Service extends Service {
 		  // TODO Auto-generated method stub
 			 
 		 try{
-			 //loadImage(Projet_Main.img) ;
-			// k =  detectFeatures(Projet_Main.img) ;
-				 // appel de la base de données
+			 
+			 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
+			 k =  detectFeatures(img) ;
+			 Mat desc = computeDescriptors(img,k) ;
+			 // appel de la base de données
 			 }
 			 catch(Exception e)
 			 {
