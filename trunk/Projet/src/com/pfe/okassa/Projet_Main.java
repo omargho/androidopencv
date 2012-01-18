@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,16 +31,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -52,6 +61,14 @@ public class Projet_Main extends Activity {
 	public static Mat img;
 	public ProgressDialog mProgressDialog;
 	public static boolean click ;
+	
+	ProjetView view ;
+	
+	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+	String fileName = "myPicture.jpg";
+	
+	String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/image.jpg";
+
 	//=========================================================SERVICE ================================================================
 	
 	private class Projet_Service extends Service {
@@ -368,10 +385,12 @@ public class Projet_Main extends Activity {
         //setContentView(R.layout.main);
         
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        
         click = false ;
         /*Original Contentview*/
-        setContentView(new ProjetView(this));
-
+        view = new ProjetView(this) ;
+        setContentView(view);
+        
         getWindow().setFormat(PixelFormat.UNKNOWN);
        
         controlInflater = LayoutInflater.from(getBaseContext());
@@ -409,21 +428,9 @@ public class Projet_Main extends Activity {
 	    	   
 	   		@Override
 	        public void onClick(View v) {
-	   			 
-	   			 click = true ;  			 
-	    			   			 
-test:  			 if(click == false)
-	   				 {
-	   				   Mat im = Highgui.imread("/mnt/sdcard/myPicture.jpg") ;
-	   				   loadImage(im) ;
-	   				 }
-	   			 else
-	   			 {
-	   				// goto test ;
-	   			 }
-	   			 
-	   			 
-	   			 
+	   				   			
+	   			click = true ;
+	   			                	 	   			 
 	           	 //Intent i= new Intent(Projet_Main.this, Projet_Service.class);
 	           	
 	           	 //i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 

@@ -29,10 +29,9 @@ public abstract class ProjetViewBase extends SurfaceView implements SurfaceHolde
     private SurfaceHolder       mHolder;
     private VideoCapture        mCamera;
     public ProgressDialog progressDialog;
-    
-    String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-    String fileName = "myPicture.jpg";
-
+    public static Bitmap bmp_ ;
+    int w,h ;
+  
     
     public ProjetViewBase(Context context) {
         super(context);
@@ -100,6 +99,8 @@ public abstract class ProjetViewBase extends SurfaceView implements SurfaceHolde
 
     protected abstract Bitmap processFrame(VideoCapture capture);
 
+    
+    
     @Override
 	public void run() {
         Log.i(TAG, "Starting processing thread");
@@ -119,33 +120,36 @@ public abstract class ProjetViewBase extends SurfaceView implements SurfaceHolde
             }
 
             if (bmp != null) {
-                Canvas canvas = mHolder.lockCanvas();
-                               
-                if (canvas != null) {
-                    canvas.drawBitmap(bmp, (canvas.getWidth() - bmp.getWidth()) / 2, (canvas.getHeight() - bmp.getHeight()) / 2, null);
-                    if(Projet_Main.click == true)
-                    {
-                    	 
-                    	try {
-                        	// Not sure if the / is on the path or not
-                            File f = new File(baseDir + File.separator + fileName);
-
-                            // Create file if it does not exist
-                            boolean success = f.createNewFile();
-                            if (success) {
-                                // File did not exist and was created
-                            	FileOutputStream out = new FileOutputStream(f);
-                            	boolean t = bmp.compress(Bitmap.CompressFormat.JPEG, 100, out) ;
-                            		if(t=true)
-                            		{
-                            			// File compression was succesfull
-                            		}
-                            } else {
-                                // File already exists
-                            }
-                        } catch (IOException e) {
-                        }
+            	
+                if(Projet_Main.click == true)
+                {
+                	Canvas canvas = new Canvas(bmp);
+                	canvas.drawBitmap(bmp,w,h, null) ;
+                	String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
+                    File file = new File(_path + "/" + System.currentTimeMillis() + ".jpg");
+                    FileOutputStream fos;
+                    try {
+                        fos = new FileOutputStream(file);
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.close();
+                    } catch (FileNotFoundException e) {
+                        Log.e("Panel", "FileNotFoundException", e);
+                    } catch (IOException e) {
+                        Log.e("Panel", "IOEception", e);
                     }
+                	bmp_ = bmp ;
+                	Projet_Main.click = false ;             	
+                	
+                }
+            	
+                Canvas canvas = mHolder.lockCanvas();
+                                
+                if (canvas != null) {
+                	w = (canvas.getWidth() - bmp.getWidth()) / 2 ;
+                	h =  (canvas.getHeight() - bmp.getHeight()) / 2 ;
+                	
+                    canvas.drawBitmap(bmp, (canvas.getWidth() - bmp.getWidth()) / 2, (canvas.getHeight() - bmp.getHeight()) / 2, null);
+
                     mHolder.unlockCanvasAndPost(canvas);
                 }
                 bmp.recycle();
