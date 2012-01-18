@@ -121,24 +121,32 @@ public abstract class ProjetViewBase extends SurfaceView implements SurfaceHolde
 
             if (bmp != null) {
             	
+            	/**
+            	 * On capture la photo que l'on enregistre dans la 
+            	 * carte mémoire il a fallut dans un premier temps 
+            	 * rajouter le droit de lire et d'ecrire dans la 
+            	 * SD au manifest.xml
+            	 */
+            	
                 if(Projet_Main.click == true)
                 {
                 	Canvas canvas = new Canvas(bmp);
                 	canvas.drawBitmap(bmp,w,h, null) ;
                 	String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
-                    File file = new File(_path + "/" + System.currentTimeMillis() + ".jpg");
+                    File file = new File(_path + "/"+ "picture.jpg");
                     FileOutputStream fos;
                     try {
                         fos = new FileOutputStream(file);
                         bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                         fos.close();
+                        Projet_Main.click = false ;
                     } catch (FileNotFoundException e) {
                         Log.e("Panel", "FileNotFoundException", e);
                     } catch (IOException e) {
                         Log.e("Panel", "IOEception", e);
                     }
-                	bmp_ = bmp ;
-                	Projet_Main.click = false ;             	
+                	
+                	             	
                 	
                 }
             	

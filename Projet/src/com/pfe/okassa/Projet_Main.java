@@ -47,6 +47,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -67,7 +68,7 @@ public class Projet_Main extends Activity {
 	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 	String fileName = "myPicture.jpg";
 	
-	String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/image.jpg";
+	
 
 	//=========================================================SERVICE ================================================================
 	
@@ -354,10 +355,10 @@ public class Projet_Main extends Activity {
 	
 	//============================================== SUITE ACTIVITE ==========================================================
   	
-	public void loadImage(Mat img)
+	public Mat loadImage(String imgName)
    	{
-   		Toast.makeText(getBaseContext(),"Chargement de l'image de l'activité... ", Toast.LENGTH_LONG).show();
-   		img.convertTo(img, MODE_WORLD_READABLE)	 ;  		
+   		   		
+   		Mat img = Highgui.imread(imgName) ;
    		
    		if ( img.empty() == true)
    		{	
@@ -365,15 +366,9 @@ public class Projet_Main extends Activity {
    		}
    		else 
    		{
-   			/**
-   			 * Problème dans le type renvoyé par la matrice image
-   			 * 
-   			 */
-   			
-   			Toast.makeText(getBaseContext(),"taille de l'image : "+ img.size()
-   					+ "nombre éléments :"+ img.total() + "element quelconque"
-   					+img.get(134, 35), Toast.LENGTH_LONG).show();  
-   		}	
+   			Toast.makeText(getBaseContext(),"Chargement de l'image OK... ", Toast.LENGTH_LONG).show();
+   		}
+		return img;	
    	}
 
 	
@@ -382,7 +377,7 @@ public class Projet_Main extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
@@ -423,18 +418,22 @@ public class Projet_Main extends Activity {
 	      IntentFilter intentFilter = new IntentFilter();
 	      intentFilter.addAction(Projet_Service.MY_ACTION);
 	      registerReceiver(myReceiver, intentFilter);
-	     	      
+	      final String path_ = Environment.getExternalStorageDirectory() + "/DCIM/Camera/picture.jpg";
+	      
 	       ((Button)findViewById(R.id.mbuttonAnalyse)).setOnClickListener(new View.OnClickListener(){
 	    	   
 	   		@Override
 	        public void onClick(View v) {
 	   				   			
 	   			click = true ;
-	   			                	 	   			 
-	           	 //Intent i= new Intent(Projet_Main.this, Projet_Service.class);
+	   			
+	   			Toast.makeText(getBaseContext(),"Picture saved... ", Toast.LENGTH_LONG).show();
+	   			img = loadImage(path_) ;
+	   			
+	           	 Intent i= new Intent(Projet_Main.this, Projet_Service.class);
 	           	
-	           	 //i.putExtra("INIT_DATA", "Data passed from Activity to Service in startService"); 
-	             //startService(i) ;      	 
+	           	 i.putExtra("INIT_DATA", "Picture passed from Activity to Service in startService"); 
+	             startService(i) ;      	 
 	               }
 	          });
 	}
