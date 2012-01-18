@@ -250,7 +250,13 @@ public class Projet_Service extends Service {
  			 bytes.add(toByteArray(mat.get(i, j))) ;  
  		  }
  	  }	 
- 			return bytes;
+ 	  
+ 	  	Intent intent = new Intent();
+		intent.setAction(MY_ACTION);
+	 	intent.putExtra("DETECTFEATURES", "toByteArray: "+ bytes.size());
+	 	sendBroadcast(intent);
+	 	
+ 		return bytes;
  	}
  	
  	/**
@@ -281,7 +287,6 @@ public class Projet_Service extends Service {
 		  		j++;
 	  		}
 	  		  i++ ;
-
 	  	}
  	  return mat;
  	} 
@@ -298,7 +303,9 @@ public class Projet_Service extends Service {
 			 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 			 k =  detectFeatures(img) ;
 			 Mat desc = computeDescriptors(img,k) ;
-			 // appel de la base de données
+			 List<byte[]> list =  toByteArrayGlob (desc) ;
+			 
+			 // appel de la base de données et au kNN
 			 }
 			 catch(Exception e)
 			 {
