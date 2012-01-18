@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.widget.Toast;
 
 
 public class Projet_Service extends Service {
@@ -60,6 +61,23 @@ public class Projet_Service extends Service {
 		return null;
 	} 
 
+	public void loadImage(Mat img)
+   	{
+   		Toast.makeText(getBaseContext(),"Chargement de l'image... ", Toast.LENGTH_LONG).show();
+   				   		
+   		
+   		if ( img.empty() == true)
+   		{	
+   			Toast.makeText(getBaseContext(),"Chargement echec... ", Toast.LENGTH_LONG).show();
+   		}
+   		else 
+   		{
+   			Toast.makeText(getBaseContext(),"Chargement de l'image succes... ", Toast.LENGTH_LONG).show();  
+   			
+   		}	
+   	}
+
+	
 	
 	/**
 	 * Cette methode permet de detecter les points
@@ -265,7 +283,8 @@ public class Projet_Service extends Service {
 		  // TODO Auto-generated method stub
 			 
 		 try{
-			 k =  detectFeatures(Projet_Main.img) ;
+			 //loadImage(Projet_Main.img) ;
+			// k =  detectFeatures(Projet_Main.img) ;
 				 // appel de la base de données
 			 }
 			 catch(Exception e)
