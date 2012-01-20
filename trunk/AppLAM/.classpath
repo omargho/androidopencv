@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="/Users/skwax_1080/workspace_pfe/Librairies/ormlite-android-4.23.jar"/>
+	<classpathentry kind="lib" path="/Users/skwax_1080/workspace_pfe/Librairies/ormlite-core-4.23.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
