@@ -1,4 +1,4 @@
-package com.pfe.okassa;
+package com.pfe.database;
 
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -7,11 +7,11 @@ import com.j256.ormlite.table.DatabaseTable;
 
 
 /**
- *  Création de la classe image et de la table en base de donnée avec le DAO (Data Access Object)
+ *  Création de la classe image et de la table en base
+ *  de donnée avec le DAO (Data Access Object)
  *  un exemple d'utilisation de SQLite sous Android
- *  Elle se résume à un BYTEARRAY qui 
- *  correspond à une matrice de  descripteurs.
- *  
+ *   
+ *    
  * @author Olympe Kassa Romain Proyart
  */
 
@@ -31,13 +31,13 @@ public class Projet_Image {
 	private byte[] desc2;
 	
 	@DatabaseField
-	private byte[] hist1;
+	private byte[] hist;
 	
 	@DatabaseField
-	private byte[] nbr_col1;
+	private int nbr_col;
 	
 	@DatabaseField
-	private byte[] nbr_col2;
+	private int nbr_lign;
 	
 	@DatabaseField(canBeNull=true)
 	private String infos;
@@ -88,6 +88,59 @@ public class Projet_Image {
 	}
 
 	
+	/**Getteur et Setteur de l'histogramme
+	 * 
+	 * @return
+	 */
+	
+	public byte[] getHist() {
+		return hist;
+	}
+ 
+	public void setHist(byte[] hist) {
+		this.hist = hist;
+	}
+	
+	
+	/**Getteur et Setteur de ligne
+	 * 
+	 * @return
+	 */
+	
+	public int getLign() {
+		return nbr_lign ;
+	}
+ 
+	public void setLign(int lign) {
+		this.nbr_lign = lign ;
+	}
+	
+	
+	/**Getteur et Setteur de colonne
+	 * 
+	 * @return
+	 */
+	
+	public int getCol() {
+		return nbr_col ;
+	}
+ 
+	public void setCol(int col) {
+		this.nbr_col = col;
+	}
+	
+	/**Getteur et Setteur de l'info
+	 * 
+	 * @return
+	 */
+	
+	public String getInfo() {
+		return infos ;
+	}
+ 
+	public void setInfos(String infos) {
+		this.infos = infos;
+	}
   /*
    * A modifier (non-Javadoc)
    * @see java.lang.Object#toString()
