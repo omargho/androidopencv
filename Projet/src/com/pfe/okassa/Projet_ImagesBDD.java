@@ -26,9 +26,9 @@ import android.widget.Toast;
 public class Projet_ImagesBDD {
 	
 	private static final int VERSION_BDD = 1;
-	private static final String NOM_BDD = "images.db";
+	private static final String NOM_BDD = "base_img";
  
-	private static final String TABLE_IMAGES = "table_images";
+	private static final String TABLE_IMAGES = "pictures";
 	private static final String COL_ID = "ID";
 	private static final String COL_IMAGE = "IMAGE_BLOB";
 	private static final String COL_DESC1 = "DESC1_BLOB";
@@ -48,8 +48,6 @@ public class Projet_ImagesBDD {
 		// TODO Auto-generated constructor stub
 		this.context = context ;
 		projet_MaBaseSQLite = new Projet_MaBaseSQLite(context, NOM_BDD, null, VERSION_BDD);
-		Toast msg = Toast.makeText(context, "base de données crée...", Toast.LENGTH_LONG);
-		msg.show() ;
 	}
 
 	
@@ -68,9 +66,12 @@ public class Projet_ImagesBDD {
 	//on ouvre la BDD en écriture
 	public void open(){
 		
-		Toast msg = Toast.makeText(context, "la base de données est ouverte...", Toast.LENGTH_LONG);
-		msg.show() ;
+//		Toast msg = Toast.makeText(context, "la base de données est ouverte...", Toast.LENGTH_LONG);
+//		msg.show() ;
 	
+//		Projet_DataBaseHelper.close();
+
+
 		bdd = projet_MaBaseSQLite.getWritableDatabase();
 		
 		//projet_MaBaseSQLite.onOpen(bdd) ;
@@ -80,8 +81,8 @@ public class Projet_ImagesBDD {
 	//on ferme l'accès à la BDD
 	public void close(){
 		
-		Toast msg = Toast.makeText(context, "la base de données est fermée...", Toast.LENGTH_LONG);
-		msg.show() ;
+//		Toast msg = Toast.makeText(context, "la base de données est fermée...", Toast.LENGTH_LONG);
+//		msg.show() ;
 		bdd.close();
 	}
 	
