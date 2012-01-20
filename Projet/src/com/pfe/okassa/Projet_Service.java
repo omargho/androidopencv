@@ -13,15 +13,11 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
-
 import android.app.Service;
 import android.content.Intent;
-//import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.widget.Toast;
 
 
 public class Projet_Service extends Service {
@@ -69,15 +65,15 @@ public class Projet_Service extends Service {
    		   Intent intent = new Intent();
 	       intent.setAction(MY_ACTION);
 	      
-	       intent.putExtra("DETECTFEATURES", "Chargement de l'image Service... ");
-	       sendBroadcast(intent);
+	       //intent.putExtra("DETECTFEATURES", "Chargement de l'image Service... ");
+	       //sendBroadcast(intent);
    		
    		Mat img = Highgui.imread(imgName) ;
    		
    		if ( img.empty() == true)
    		{	
-   		   intent.putExtra("DETECTFEATURES", "Chargement echec service...");
-	       sendBroadcast(intent);
+   		   //intent.putExtra("DETECTFEATURES", "Chargement echec service...");
+	       //sendBroadcast(intent);
    			
    		}
    		else 
@@ -105,31 +101,36 @@ public class Projet_Service extends Service {
 		{								
 			
 			List<KeyPoint> keyPoints = new ArrayList<KeyPoint>() ;
+			
 			FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIFT) ;
-						
+			FeatureDetector detector2 = FeatureDetector.create(FeatureDetector.SURF) ;
+			
 			   Intent intent = new Intent();
 		       intent.setAction(MY_ACTION);
 		      
-		       intent.putExtra("DETECTFEATURES", "detection des points d'interets... ");
-		       sendBroadcast(intent);
+		       //intent.putExtra("DETECTFEATURES", "detection des points d'interets... ");
+		       //sendBroadcast(intent);
 			
-			if(detector.empty() == true)
+			if(detector.empty() == true || detector2.empty() == true )
 			{
-			       intent.putExtra("DETECTFEATURES", "le descripteur est null... ");
-			       sendBroadcast(intent);
+			      // intent.putExtra("DETECTFEATURES", "le descripteur est null... ");
+			      // sendBroadcast(intent);
 			}
 			else
 			{					
-			       intent.putExtra("DETECTFEATURES", "on peut commencer le detection");
+			     //  intent.putExtra("DETECTFEATURES", "on peut commencer le detection");
+			     //  sendBroadcast(intent);
+				   
+			       intent.putExtra("SHOWPROGRESSBAR", true);
 			       sendBroadcast(intent);
-				  
 			       detector.detect(img, keyPoints);	
+			      
 			      
 				
 				if(keyPoints.isEmpty() == true)
 				{	
-					 intent.putExtra("DETECTFEATURES", "les points d'interets n'ont pas été detectés correctement...");				 
-				     sendBroadcast(intent);
+				//	 intent.putExtra("DETECTFEATURES", "les points d'interets n'ont pas été detectés correctement...");				 
+				 //    sendBroadcast(intent);
 					
 				}
 				else
@@ -164,21 +165,23 @@ public class Projet_Service extends Service {
 		
 			Intent intent = new Intent();
 			intent.setAction(MY_ACTION);
-		 	intent.putExtra("DETECTFEATURES", "on se lance dans le calcul les descripteurs... "+ kpt.size());
-		 	sendBroadcast(intent);
+		 	//intent.putExtra("DETECTFEATURES", "on se lance dans le calcul les descripteurs... "+ kpt.size());
+		 	//sendBroadcast(intent);
 		 	
 		    extract.compute(img3, kpt, descriptors);
 		   
+		    intent.putExtra("HIDEPROGRESSBAR", true);
+		    sendBroadcast(intent);
 		 				
 			if(descriptors.empty() == true)
 			{				
-				intent.putExtra("DETECTFEATURES", "les descripteurs n'ont pas été detectés correctement... ");
-			 	sendBroadcast(intent);
+				//intent.putExtra("DETECTFEATURES", "les descripteurs n'ont pas été detectés correctement... ");
+			 	//sendBroadcast(intent);
 			}
 			else
 			{				
-				intent.putExtra("DETECTFEATURES", "les descripteurs ont  été detectés ... ");
-			 	sendBroadcast(intent);
+				//intent.putExtra("DETECTFEATURES", "les descripteurs ont  été detectés ... ");
+			 	//sendBroadcast(intent);
 			}
 			
 			intent.putExtra("DETECTFEATURES","keypoints " + "size is :"+ kpt.size() + " descriptors size is :"+ descriptors.size());
@@ -292,6 +295,10 @@ public class Projet_Service extends Service {
  	} 
   	 
 	
+ 	/* Compare the HSV historgrams of two images, a and b. */ 
+ 	
+ 	
+ 	
 	public class MyThread extends Thread{
 		 
 		 @Override
@@ -303,7 +310,10 @@ public class Projet_Service extends Service {
 			 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 			 k =  detectFeatures(img) ;
 			 Mat desc = computeDescriptors(img,k) ;
+			 int n = desc.width() ;
 			 List<byte[]> list =  toByteArrayGlob (desc) ;
+			 			 
+			 Mat m = toMatrice(list,n) ;
 			 
 			 // appel de la base de données et au kNN
 			 }

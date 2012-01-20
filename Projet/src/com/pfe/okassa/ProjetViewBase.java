@@ -4,7 +4,6 @@ package com.pfe.okassa;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -14,14 +13,12 @@ import org.opencv.highgui.Highgui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 public abstract class ProjetViewBase extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private static final String TAG = "Sample::SurfaceView";

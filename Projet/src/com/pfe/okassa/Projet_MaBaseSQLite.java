@@ -47,7 +47,7 @@ public class Projet_MaBaseSQLite extends SQLiteOpenHelper {
 
 	private static final String CREATE_BDD = "CREATE TABLE " + TABLE_IMAGES + " ("
 	+ COL_ID + "INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_IMAGE + "BLOB," + COL_DESC1 +
-	" BLOB,"+ COL_DESC2 + "BLOB," + COL_M + "INTEGER,"+ COL_N + "INTEGER,"+ COL_INFO + "TEXT); "
+	" BLOB,"+ COL_DESC2 + "BLOB," + COL_M + "INTEGER NOT NULL,"+ COL_N + "INTEGER,"+ COL_INFO + "TEXT); "
 	;
 
 	public Projet_MaBaseSQLite(Context context, String name, CursorFactory factory,int version) {

@@ -73,7 +73,7 @@ public class Projet_ImagesBDD {
 	
 		bdd = projet_MaBaseSQLite.getWritableDatabase();
 		
-		projet_MaBaseSQLite.onOpen(bdd) ;
+		//projet_MaBaseSQLite.onOpen(bdd) ;
 		
 ;	}
  

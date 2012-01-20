@@ -10,9 +10,7 @@ import org.opencv.highgui.VideoCapture;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.provider.MediaStore.Images;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 class ProjetView extends ProjetViewBase {
     public static Mat mRgba;
