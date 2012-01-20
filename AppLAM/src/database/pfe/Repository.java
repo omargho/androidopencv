@@ -10,6 +10,14 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import main.pfe.Image;
 
+
+/**
+ * Classe qui permet d'effectuer des opérations sur la table qui correspond à la classe Image :
+ * 
+ * getImages(), saveOrUpdateImage(), ...
+ * 
+ * @author Olympe Kassa Romain Proyart
+ */
 public class Repository {
 	private final static String LOG_TAG = "Repository";
 
@@ -25,6 +33,12 @@ public class Repository {
 			deleteImage(image);
 		}
 	}
+	
+	/**
+	 * Retourne une liste avec toutes les instances de l'objet Image
+	 * 
+	 * @return
+	 */
 
 	public List<Image> getImages() {
 		try {
@@ -68,7 +82,7 @@ public class Repository {
 	}
 
 	/**
-	 * 
+	 * Récupère le lien entre la table et la bdd
 	 * 
 	 * @param databaseHelper
 	 * @return
