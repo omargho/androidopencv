@@ -13,6 +13,12 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+/**
+ * Création et gestion de la base de donnée
+ * 
+ * @author Romain Proyart Olympe Kassa
+ */
+
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	// name of the database file for your application -- change to something appropriate for your app
