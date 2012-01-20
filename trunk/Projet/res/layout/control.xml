@@ -17,10 +17,17 @@
     android:id="@+id/mbuttonAnalyse" 
     android:text="Analyse" 
 	android:layout_gravity="bottom" 
+	android:gravity="center_horizontal" 
 	android:layout_width="80px"
 	android:layout_height="40px">
 	</Button>
 	
+<ProgressBar
+ android:id="@+id/progressBar1"
+ style="?android:attr/progressBarStyleLarge"
+ android:layout_width="wrap_content"
+ android:layout_height="wrap_content"
+ android:visibility="invisible" />
 
         
         
