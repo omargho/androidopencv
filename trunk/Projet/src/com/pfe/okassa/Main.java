@@ -5,6 +5,8 @@ package com.pfe.okassa;
 import org.opencv.core.Mat;
 
 
+import com.j256.ormlite.android.AndroidConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 import com.pfe.okassa.Service_;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -55,11 +57,7 @@ public class Main extends Activity {
         /**
          * Start activity of database
          */
-        Intent i= new Intent(Main.this, DataBase_.class);
-        Toast.makeText(getBaseContext(),"Database activity... ", Toast.LENGTH_LONG).show();
-        startActivity(i) ;
-        Toast.makeText(getBaseContext(),"Database activity is launched... ", Toast.LENGTH_LONG).show();
-        
+       
         click = false ;
         /*Original Contentview*/
         view = new View_(this) ;
@@ -71,7 +69,10 @@ public class Main extends Activity {
         View viewControl = controlInflater.inflate(R.layout.control, null);
         LayoutParams layoutParamsControl = new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT);
         this.addContentView(viewControl, layoutParamsControl);
-             
+        
+        
+        //ConnectionSource connectionSource = new AndroidConnectionSource(sqliteOpenHelper);
+        DatabaseManager.init(this);    
     }
       
     
@@ -100,7 +101,8 @@ public class Main extends Activity {
 	             startService(i) ;      	 
 	               }
 	          });
-	}
+	     
+    }
 
 
     @Override
