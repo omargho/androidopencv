@@ -295,8 +295,8 @@ public class Service_ extends Service {
  	/**
  	 *	Cette methode nous permet de convertir une matrice 
  	 * tableau d'objet de bytes dans notre cas il 
- 	 * s'agit de r�cuperer notre matrice et de mettre ses 
- 	 * �l�ments de type byte dans un tableau.
+ 	 * s'agit de récuperer notre matrice et de mettre ses 
+ 	 * éléments de type byte dans un tableau.
  	 * 
  	 *  @author Olympe Kassa
  	 * 
@@ -416,8 +416,7 @@ public class Service_ extends Service {
 	@Override
    public void run() {
 		  // TODO Auto-generated method stub
-		while(Thread.currentThread() == runner) 
-		{
+
 			 try{
 				 
 				 // working stuff of the app
@@ -429,7 +428,7 @@ public class Service_ extends Service {
 				 Mat surf = computeDescriptors(img,k_surf,1) ;
 				 Mat hist = computeHist(img) ;
 				
-				 // on essaie d'inserer les images dans la BDD
+				 // on essaie d'inserer une image dans la BDD
 				 image = new Image() ;
 				 image.setId(1);
 				 image.setImage(ObjectToByteArray(img));
@@ -439,21 +438,29 @@ public class Service_ extends Service {
 				 image.setSurf(ObjectToByteArray(surf)) ;
 				 image.setHist1(ObjectToByteArray(hist));
 				 
-				 if(isRunning ==  true)
-				 {
-					 isRunning = false ;   
-					 stopThread();
-				        return; //optional in this case since the loop will exit anyways
-				      }
+				 int res = DatabaseManager.getInstance().addData(image) ;
 				 
-				 // appel de la base de donn�es et au kNN
+				 Intent intent = new Intent();
+				 intent.setAction(MY_ACTION);
+				 
+				 if(res == 0)
+				 {
+					 	intent.putExtra("DETECTFEATURES", "image non rajoutée");
+					 	sendBroadcast(intent);
+				 }
+				 else
+				 {
+					 intent.putExtra("DETECTFEATURES", "image rajoutée en bdd");
+					 sendBroadcast(intent); 						 
+				 }
+				 
+				 // appel de la base de données et au kNN
 				 }
 				 catch(Exception e)
 				 {
 					// TODO Auto-generated catch block
 					    e.printStackTrace();
 				 }	
-			}
-		 }	 
+			}	 
 	}
 }
