@@ -1,5 +1,6 @@
 package com.pfe.okassa;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,30 +23,18 @@ import com.j256.ormlite.support.ConnectionSource;
 
 
 
-public class DataBase_ extends OrmLiteBaseService {
+public class DataBase_ extends Activity {
 
 	@Override
-	public IBinder onBind(Intent intent) {
+	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		return null;
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public ConnectionSource getConnectionSource() {
+	protected void onStart() {
 		// TODO Auto-generated method stub
-		return super.getConnectionSource();
-	}
-
-	@Override
-	public OrmLiteSqliteOpenHelper getHelper() {
-		// TODO Auto-generated method stub
-		return super.getHelper();
-	}
-
-	@Override
-	public void onCreate() {
-		// TODO Auto-generated method stub
-		super.onCreate();
+		super.onStart();
 	}
 
 	
