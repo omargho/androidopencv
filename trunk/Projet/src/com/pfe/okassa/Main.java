@@ -69,10 +69,7 @@ public class Main extends Activity {
         View viewControl = controlInflater.inflate(R.layout.control, null);
         LayoutParams layoutParamsControl = new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.FILL_PARENT);
         this.addContentView(viewControl, layoutParamsControl);
-        
-        
-        //ConnectionSource connectionSource = new AndroidConnectionSource(sqliteOpenHelper);
-        DatabaseManager.init(this);    
+                
     }
       
     
