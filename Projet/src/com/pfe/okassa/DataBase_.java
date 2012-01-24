@@ -29,12 +29,16 @@ public class DataBase_ extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		DatabaseManager.init(this);    
 	}
 
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
+		 Intent intent = new Intent();
+		 intent.putExtra("DETECTFEATURES", DatabaseManager.getInstance().GetData().get(0).toString());
+		 sendBroadcast(intent);
 	}
 
 	

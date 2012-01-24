@@ -1,5 +1,7 @@
 package com.pfe.okassa;
 
+import java.text.SimpleDateFormat;
+
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -173,4 +175,19 @@ public class Image {
 		this.infos = infos;
 	}
 	
+	/**
+	 * 
+	 * toString
+	 * 
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("id=").append(id);
+		sb.append(", ").append("id=").append(id);
+		sb.append(", ").append("m=").append(m);
+		sb.append(", ").append("n=").append(n);
+		sb.append(", ").append("infos=").append(infos);
+		return sb.toString();
+	}
 }

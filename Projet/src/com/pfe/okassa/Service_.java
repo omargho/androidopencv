@@ -34,7 +34,7 @@ public class Service_ extends Service {
 	List<KeyPoint> k = new ArrayList<KeyPoint>() ;
 	public Mat img ;	
 	Image image ;
-	boolean isRunning = false ;
+	int isRunning = 0 ;
 	
 	/**
 	 * Convert a serializable object to byteArray
@@ -98,12 +98,14 @@ public class Service_ extends Service {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 
-		
 		initData = intent.getStringExtra("INIT_DATA");
 		 
 		 MyThread myThread = new MyThread();
 		 myThread.start();
-
+		 if(isRunning == 2)
+		 {
+			 myThread.stop() ;
+		 }
 	}
     
 	@Override
@@ -117,21 +119,12 @@ public class Service_ extends Service {
    		
    		   Intent intent = new Intent();
 	       intent.setAction(MY_ACTION);
-	      
-	       //intent.putExtra("DETECTFEATURES", "Chargement de l'image Service... ");
-	       //sendBroadcast(intent);
-   		
+	       
    		Mat img = Highgui.imread(imgName) ;
    		
-   		if ( img.empty() == true)
+   		if ( img.empty() == false)
    		{	
-   		   //intent.putExtra("DETECTFEATURES", "Chargement echec service...");
-	       //sendBroadcast(intent);
-   			
-   		}
-   		else 
-   		{
-   		   intent.putExtra("DETECTFEATURES", "Chargement de l'image Service OK... ");
+   		   intent.putExtra("DETECTFEATURES", "image bien chargée... ");
 	       sendBroadcast(intent);
    		}
 		return img;	
@@ -150,63 +143,41 @@ public class Service_ extends Service {
 	 * @author Olympe Kassa
 	 */
 	
-	public List<KeyPoint> detectFeatures(Mat img, int choix)
-		{								
+public List<KeyPoint> detectFeatures(Mat img, int choix)
+	{								
 			
-			List<KeyPoint> keyPoints = new ArrayList<KeyPoint>() ;
-			FeatureDetector detector = null ;
+		List<KeyPoint> keyPoints = new ArrayList<KeyPoint>() ;
+						
+		Intent intent = new Intent();
+		intent.setAction(MY_ACTION);
+		intent.putExtra("SHOWPROGRESSBAR", true);
+		sendBroadcast(intent);
 			
-			switch(choix)
-			{
+		switch(choix)
+		{
 			case 0 :
-					detector = FeatureDetector.create(FeatureDetector.SIFT) ;
+				FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIFT) ;
+				detector.detect(img, keyPoints);	
+				intent.putExtra("DETECTFEATURES", "SIFT keypoints "+ keyPoints.size());
+				sendBroadcast(intent);
 			case 1 :
-					detector = FeatureDetector.create(FeatureDetector.SURF) ;
-			}
-					
-			   Intent intent = new Intent();
-		       intent.setAction(MY_ACTION);
-		      
-		       //intent.putExtra("DETECTFEATURES", "detection des points d'interets... ");
-		       //sendBroadcast(intent);
-			
-			if(detector.empty() == true )
-			{
-			      // intent.putExtra("DETECTFEATURES", "le descripteur est null... ");
-			      // sendBroadcast(intent);
-			}
-			else
-			{					
-			     //  intent.putExtra("DETECTFEATURES", "on peut commencer le detection");
-			     //  sendBroadcast(intent);
-				   
-			       intent.putExtra("SHOWPROGRESSBAR", true);
-			       sendBroadcast(intent);
-			       detector.detect(img, keyPoints);	
-			      
-			      
+				FeatureDetector detector2 = FeatureDetector.create(FeatureDetector.SURF) ;
+				detector2.detect(img, keyPoints);	
+				intent.putExtra("DETECTFEATURES", "SURF keypoints "+ keyPoints.size());
+				sendBroadcast(intent);
+			default:
 				
-				if(keyPoints.isEmpty() == true)
-				{	
-				//	 intent.putExtra("DETECTFEATURES", "les points d'interets n'ont pas �t� detect�s correctement...");				 
-				 //    sendBroadcast(intent);
-					
-				}
-				else
-				{	
-					 intent.putExtra("DETECTFEATURES", "les points d'interets ont �t� detect�s... et on a : "+ keyPoints.size());
-				     sendBroadcast(intent);
-				}
-			}
-			
+		}
+
+		
 		 return keyPoints ;		
 	}
 	
 	
 	/**
 	 * Cette methode permet de calculer les descripteurs
-	 * de notre image � partir des points d'interets 
-	 * calcul�s pr�cedements.
+	 * de notre image à partir des points d'interets 
+	 * calculés précedements.
 	 * 
 	 * @param img3
 	 * @param kpt
@@ -219,40 +190,29 @@ public class Service_ extends Service {
 	public Mat computeDescriptors(Mat img3,List<KeyPoint> kpt, int choix)
 	{
 		Mat descriptors = new Mat()  ;
-		DescriptorExtractor extract = null ; 
+		Intent intent = new Intent();
+		intent.setAction(MY_ACTION);
+
 		
-			switch(choix)
-			{
+		switch(choix)
+		{
 			case 0 :
-				extract = DescriptorExtractor.create(DescriptorExtractor.SIFT);
+				DescriptorExtractor extract = DescriptorExtractor.create(DescriptorExtractor.SIFT);
+				extract.compute(img3, kpt, descriptors);
+				intent.putExtra("DETECTFEATURES"," SIFT descriptors size is :"+ descriptors.size());
+				sendBroadcast(intent);
+				
 			case 1:
-				extract = DescriptorExtractor.create(DescriptorExtractor.SURF);
-			}
-		
-			Intent intent = new Intent();
-			intent.setAction(MY_ACTION);
-		 	//intent.putExtra("DETECTFEATURES", "on se lance dans le calcul les descripteurs... "+ kpt.size());
-		 	//sendBroadcast(intent);
+				DescriptorExtractor extract2 = DescriptorExtractor.create(DescriptorExtractor.SURF);
+				extract2.compute(img3, kpt, descriptors);
+				intent.putExtra("DETECTFEATURES"," SURF descriptors size is :"+ descriptors.size());	
+				sendBroadcast(intent);
+			default:
+				
+		}		
 		 	
-		    extract.compute(img3, kpt, descriptors);
-		   
-		    intent.putExtra("HIDEPROGRESSBAR", true);
+		    intent.putExtra("HIDEPROGRESSBAR", true);		
 		    sendBroadcast(intent);
-		 				
-			if(descriptors.empty() == true)
-			{				
-				//intent.putExtra("DETECTFEATURES", "les descripteurs n'ont pas �t� detect�s correctement... ");
-			 	//sendBroadcast(intent);
-			}
-			else
-			{				
-				//intent.putExtra("DETECTFEATURES", "les descripteurs ont  �t� detect�s ... ");
-			 	//sendBroadcast(intent);
-			}
-			
-			intent.putExtra("DETECTFEATURES","keypoints " + "size is :"+ kpt.size() + " descriptors size is :"+ descriptors.size());
-		 	sendBroadcast(intent);
-			
 			return descriptors;
 			
 	}
@@ -296,7 +256,8 @@ public class Service_ extends Service {
  	 *	Cette methode nous permet de convertir une matrice 
  	 * tableau d'objet de bytes dans notre cas il 
  	 * s'agit de récuperer notre matrice et de mettre ses 
- 	 * éléments de type byte dans un tableau.
+ 	 * éléments de type byte dans un tableau. chaque elelment 
+ 	 * de la matrice est un octet et le tableau sera seialisé
  	 * 
  	 *  @author Olympe Kassa
  	 * 
@@ -363,7 +324,7 @@ public class Service_ extends Service {
 	
  	/* Compute histogramm */ 
  	
- 	public Mat computeHist(Mat img)
+ public Mat computeHist(Mat img)
  	{
  		Mat hist = null;
 		// we compute the histogram from the 0-th and 1-st channels
@@ -393,26 +354,9 @@ public class Service_ extends Service {
  	}
  	
  	
-	public class MyThread extends Thread{
+public class MyThread extends Thread{
 		
-		private volatile Thread runner;
-
-		public synchronized void startThread(){
-		  if(runner == null){
-		    runner = new Thread(this);
-		    runner.start();
-		  }
-		}
-
-		public synchronized void stopThread(){
-		  if(runner != null){
-		    Thread moribund = runner;
-		    runner = null;
-		    moribund.interrupt();
-		  }
-		}
-		
-		
+				
 	@Override
    public void run() {
 		  // TODO Auto-generated method stub
@@ -420,7 +364,7 @@ public class Service_ extends Service {
 			 try{
 				 
 				 // working stuff of the app
-				 isRunning = true ;
+				 isRunning = 1 ;
 				 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 				 List<KeyPoint> k_sift = detectFeatures(img,0);
 				 List<KeyPoint> k_surf = detectFeatures(img,1);
@@ -434,25 +378,16 @@ public class Service_ extends Service {
 				 image.setImage(ObjectToByteArray(img));
 				 image.setM(img.height());
 				 image.setN(img.width()) ;
-				 image.setSift(ObjectToByteArray(sift)) ;
-				 image.setSurf(ObjectToByteArray(surf)) ;
-				 image.setHist1(ObjectToByteArray(hist));
+				 image.setSift(ObjectToByteArray(toByteArrayGlob(sift))) ;
+				 //image.setSurf(ObjectToByteArray(toByteArrayGlob(surf))) ;
+				 image.setHist1(ObjectToByteArray(toByteArrayGlob(hist)));
+								 
 				 
-				 int res = DatabaseManager.getInstance().addData(image) ;
+				 DatabaseManager.getInstance().addData(image) ;
 				 
-				 Intent intent = new Intent();
-				 intent.setAction(MY_ACTION);
+				 isRunning = 2 ; 
 				 
-				 if(res == 0)
-				 {
-					 	intent.putExtra("DETECTFEATURES", "image non rajoutée");
-					 	sendBroadcast(intent);
-				 }
-				 else
-				 {
-					 intent.putExtra("DETECTFEATURES", "image rajoutée en bdd");
-					 sendBroadcast(intent); 						 
-				 }
+				 this.currentThread ().stop() ;
 				 
 				 // appel de la base de données et au kNN
 				 }
