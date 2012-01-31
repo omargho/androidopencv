@@ -22,15 +22,21 @@ import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
+
+
+
+
+
+
 
 public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	
@@ -79,7 +85,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	public Object ByteArrayToObject (byte[] bytes)
 	{
 	  Object obj = null;
-	  try {
+      try {
 	    ByteArrayInputStream bis = new ByteArrayInputStream (bytes);
 	    ObjectInputStream ois = new ObjectInputStream (bis);
 	    obj = ois.readObject();
@@ -92,6 +98,8 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	  }
 	  return obj;
 	}
+	
+	
 	
 	
 	@Override
@@ -111,10 +119,9 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 		 
 		 MyThread myThread = new MyThread();
 		 myThread.start();
-		 if(isRunning == 2)
-		 {
-			 myThread.stop() ;
-		 }
+		 
+
+		  
 	}
     
 	@Override
@@ -138,6 +145,16 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
    		}
 		return img;	
 	}
+	
+	/**
+	 * This function is used to convert a file into byte array
+	 * to store it into a  database.
+	 * 
+	 * @author olympe kassa
+	 * @param image_url
+	 * @return
+	 */
+	
 	
 	public byte[] convertImage(File image_url)
 	{
@@ -196,6 +213,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 				detector = FeatureDetector.create(FeatureDetector.SIFT) ;
 				detector.detect(img, keyPoints);	
 				Log.i("DETECTFEATURES inside", "SIFT keypoints "+ keyPoints.size());
+				
 				if(cpt == 0)
 				{
 					sift_2 = keyPoints ;
@@ -298,6 +316,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	  }
  	  return bytes;
  	}
+
   	 
  	/**
  	 *	Cette methode nous permet de convertir une matrice 
@@ -312,9 +331,32 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	 * @return
  	 */
  	
- 	public List<byte[]>  toByteArrayGlob (Mat mat)
+ 	
+ 	/* ==========Convert a double to his byte value=============== */
+ 	 
+ 	public static byte[] toByta(double data) {
+ 	    return toByta(Double.doubleToRawLongBits(data));
+ 	}
+ 	
+ 	//==========Convert an array of double to an array of byte=============
+ 	 
+ 	public static byte[] toByteElement(double[] data) {
+ 	    if (data == null) return null;
+ 	    // ----------
+ 	    byte[] byts = new byte[data.length * 8];
+ 	    for (int i = 0; i < data.length; i++)
+ 	        System.arraycopy(toByta(data[i]), 0, byts, i * 8, 8);
+ 	    return byts;
+ 	}
+ 	
+ 	// ===========Convert a Matrix of double[] to an ArrayList of byte[]=====================
+ 	// because each element of the matrix is a double[]
+ 	
+ 	public ArrayList<byte[]>  toByteArrayGlob (Mat mat)
  	{
- 	  List<byte[]> bytes = new ArrayList<byte[]>();
+ 	  ArrayList<byte[]> tab = new ArrayList<byte[]>() ;
+ 		
+ 	  byte[] bytes = null ;
  	  
  	  int m=mat.height() ;
  	  int n = mat.width() ;
@@ -324,17 +366,44 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	  {
  		  for(j=0;j<n;j++)
  		  {
- 			 bytes.add(toByteArray(mat.get(i, j))) ;  
+ 			
+ 			double[] value = mat.get(i, j);
+ 			
+ 			bytes = toByteElement(value) ;
+ 			
+ 			tab.add(bytes) ;
+			
  		  }
  	  }	 
  	  
- 	  	Intent intent = new Intent();
-		intent.setAction(MY_ACTION);
-	 	intent.putExtra("DETECTFEATURES", "toByteArray: "+ bytes.size());
-	 	sendBroadcast(intent);
-	 	
- 		return bytes;
+ 	  return tab;
  	}
+ 	
+ 	public ArrayList<double[]>  MatTOArray (Mat mat)
+ 	{
+ 	  ArrayList<double[]> tab = new ArrayList<double[]>() ;
+ 			  
+ 	  int m=mat.height() ;
+ 	  int n = mat.width() ;
+ 	  int i,j;
+ 	  
+ 	  for(i=0;i<m;i++)
+ 	  {
+ 		  for(j=0;j<n;j++)
+ 		  {
+ 			
+ 			double[] value = mat.get(i, j);
+ 			 			
+ 			tab.add(value) ;
+			
+ 		  }
+ 	  }
+ 	 Log.i("MATRIX TO ARRAY", "size = "+ tab.size());
+ 	  
+ 	  return tab;
+ 	}
+ 	
+ 	
  	
  	/**
  	 * Cette methode nous permet de convertir une liste de  bytearray
@@ -373,44 +442,37 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	
  public Mat computeHist(Mat img)
  	{
- 		Mat hist = null;
-		// we compute the histogram from the 0-th and 1-st channels
-		List<Integer> channels = new ArrayList<Integer>();
-		channels.add(0);
-		channels.add(1);
-		
-		
-		List<Integer> histSize = new ArrayList<Integer>();
-		 // and the saturation to 32 levels
-	    int hbins = 30, sbins = 32;
-	    histSize.add(hbins);
-	    histSize.add(sbins);
-	    
-		// ranges of channels
-		List<Float> ranges = new ArrayList<Float>();
-		ranges.add((float)0);
-		ranges.add((float)256);
-		
-		// Mat to compute histogramms
-		List<Mat> mat = new ArrayList<Mat>();
-		mat.add(img) ;
-		
-		Imgproc.calcHist(mat, channels, null, hist, histSize, ranges) ;
-		
- 		return hist ;
+	 ArrayList<Mat> images = new ArrayList<Mat>();
+	 List<Integer> channels = new ArrayList<Integer>();
+	 List<Integer> histSize = new ArrayList<Integer>();
+	 List<Float> ranges = new ArrayList<Float>();           
+	                
+     images.add(img);
+     channels.add(0);
+	 histSize.add(10);
+	 ranges.add(0.0f); ranges.add(256.0f);
+	 Mat hist = new Mat();
+	 Imgproc.calcHist(images, channels, new Mat(), hist, histSize, ranges);
+				
+ 	 return hist ;
  	}
  	
- 	 
+ 
 public class MyThread extends Thread{
-				
+	
+	private volatile boolean stop = false;
+	
+	public synchronized void requestStop() {
+        stop = true;
+     }
+	
 	@Override
    public void run() {
 		  // TODO Auto-generated method stub
-
-			 try{
-				 
-				 // working stuff of the app
 			
+		
+			 try{
+					
 				 File f = new File("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 				 byte[] im = convertImage(f) ;
 				  
@@ -430,43 +492,72 @@ public class MyThread extends Thread{
 				 Log.i("SERVICE", "computing descriptors with SIFT");
 				 Mat sift = computeDescriptors(img,k_sift,0) ;
 				 Log.i("COMPUTEDESCRIPTORS"," SIFT descriptors size is :"+ sift.size());
-				 
-				 
+						 
 				 Log.i("SERVICE", "computing descriptors with SURF");
 				 Mat surf = computeDescriptors(img,k_surf,1) ;
+				 			
 				 Log.i("COMPUTEDESCRIPTORS"," SURF descriptors size is :"+ surf.size());
 				 
 				 Log.i("SERVICE", "computing histogramms");
 				 Mat hist = computeHist(img) ;
 				 Log.i("SERVICE", "histogramms");
 				 
-				 if (InfosImage.store == true )
-				 {
-					 // get the dao
-					 RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();
-					 
-					 // the new image class we want to store into the database
-					 image = new Image(ObjectToByteArray(im), ObjectToByteArray(sift), ObjectToByteArray(surf), ObjectToByteArray(hist), img.width(), img.height(), "une image") ;
-					
-					 // create some entries in the onCreate
-					 simpleDao.create(image);
-				 
-				 }
-				 
+								 
+				// get the dao
+				RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();					
 				
-				 
-				 isRunning = 2 ; 
-				 
-				 Thread.currentThread().stop() ;
-				 
-				 // appel de la base de données et au kNN
+				// the new image class we want to store into the database
+				image = new Image(im, ObjectToByteArray(MatTOArray(sift)),ObjectToByteArray(MatTOArray(surf)),
+						ObjectToByteArray(MatTOArray(hist)), img.height(), img.width(), "on teste une image") ;
+				
+				// create some entries in the onCreate
+				simpleDao.create(image);
+				
+				
+				// trying to retrieve data
+				Log.i("IMAGE DATABASE ", "we get the data we inserted into the database");
+				List<Image> images = simpleDao.queryForAll() ;
+				
+				if (images.isEmpty() == false)
+				{
+					Log.i("IMAGE RETRIEVED ", " size is =" + images.size() );
+					
+					for(Image image : images)
+					{
+						ByteArrayToObject (image.hist1) ;					
+
+					}
+									}
+				//simpleDao.query(simpleDao.queryBuilder().where().like("nameColumn", "sift").prepare()) ;
+				
+			 	
+				// query for all sift elements in the database
+				QueryBuilder<Image, Integer> q = simpleDao.queryBuilder().selectColumns("surf") ;
+				List<Image> result = q.query();				
+						
+				
+				if (result.isEmpty() == false)
+				{
+					Log.i("IMAGE RETRIEVED ", "we retrieved the column and his size is =" + result.size() );
+					
+					for(Image image : result)
+					{
+						Log.i("IMAGE RETRIEVED ", " sift size =" + image.sift.length) ;
+					}
+				}
+				
+				 this.interrupt() ;
+				 stopSelf() ;
+				  //appel de la base de données et au kNN
 				 }
 				 catch(Exception e)
 				 {
 					// TODO Auto-generated catch block
 					    e.printStackTrace();
-				 }	
-			}	 
+				 }
+            
+            
+		}	 
 	}
 
 }
