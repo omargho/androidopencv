@@ -34,6 +34,16 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+
+
+/**
+ *  OrmLiteBaseActivity<DatabaseHelper> est une sous 
+ *  classe de Activity mais qui nous permet de recuperer
+ *  une instance du DAO. 
+ * 
+ * @author olympekassa
+ *
+ */
 public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	
 	String MAIN  ;
@@ -50,9 +60,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
     private MenuItem            mItemAddPicture;
     private MenuItem            TakeAPicture;
 	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-	
-		
-  	  	
+	  	  	
   	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,8 +99,6 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 		 Log.i("ACTIVITY CREATE", "BROADCAST TYPE DATABASE");
 		 
 		 RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();
-			// query for all of the data objects in the database
-		 List<Image> list = simpleDao.queryForAll();
 		       
     }
       
@@ -124,23 +130,28 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @return
 	 */
 	
-	public byte[] ObjectToByteArray (Object obj)
-	{
-	  byte[] bytes = null;
-	  ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	  try {
-	    ObjectOutputStream oos = new ObjectOutputStream(bos); 
-	    oos.writeObject(obj);
-	    oos.flush(); 
-	    oos.close(); 
-	    bos.close();
-	    bytes = bos.toByteArray ();
-	  }
-	  catch (IOException ex) {
-	    //TODO: Handle the exception
-	  }
-	  return bytes;
-	}
+    public static byte[] ObjectToByteArray(Object obj) throws IOException {
+        byte[] bytes = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
+        try {
+            bos = new ByteArrayOutputStream();
+            oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.flush();
+            bytes = bos.toByteArray();
+        } finally {
+            if (oos != null) {
+                oos.close();
+            }
+            if (bos != null) {
+                bos.close();
+            }
+        }
+        return bytes;
+    }
+    
+	
 	/**
 	 * Convert a byteArray to an Object
 	 *     
@@ -165,24 +176,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	  return obj;
 	}
 	
-    
-	private void doSampleDatabaseStuff(Mat img,Mat sift,Mat surf,Mat histo, int m, int n) {
-		    // get our dao
-		    RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();
-			// create a new image object	
-		    byte[] img_byte = ObjectToByteArray(img) ;
-		    byte[] sift_byte = ObjectToByteArray(sift) ;
-		    byte[] surf_byte = ObjectToByteArray(surf);
-		    byte[] histo_byte = ObjectToByteArray(histo);
-		    
-			Image simple = new Image(img_byte, sift_byte, surf_byte, histo_byte, m, n, null) ;
-			// store it in the database
-			simpleDao.create(simple);
-		
-		Log.i("Main Activity", "insertion done  with page at " + System.currentTimeMillis());
-	}
-
-
+   
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.i(TAG, "Menu Item selected " + item);

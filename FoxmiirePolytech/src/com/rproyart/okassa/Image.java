@@ -1,9 +1,12 @@
 package com.rproyart.okassa;
 
+import org.opencv.core.Mat;
+
 import android.util.Log;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  *  Creation de la classe image et de la table
@@ -21,6 +24,7 @@ import com.j256.ormlite.field.DatabaseField;
  */
 
 
+@DatabaseTable(tableName = "images")
 
 public class Image {
 	
@@ -51,7 +55,8 @@ public class Image {
        @DatabaseField
        String infos;
        
-       
+       @DatabaseField (dataType = DataType.SERIALIZABLE)
+       Mat mat ;
        
     public Image()
     {
@@ -69,7 +74,10 @@ public class Image {
     	this.m = m ;
     	this.n = n ;
     	this.infos = infos ;
+    	
     }
+    
+       
     
     /**
      * Id de l'image
