@@ -55,18 +55,15 @@ public class Image {
        @DatabaseField
        String infos;
        
-       @DatabaseField (dataType = DataType.SERIALIZABLE)
-       Mat mat ;
        
     public Image()
     {
-       // all persisted classes must define 
-    	//a no-arg constructor with at least package visibility
     	Log.i("IMAGE", "constructor");
     }
     
     public Image(byte[] bs, byte[] bs2, byte[] bs3, byte[] bs4, int m, int n, String infos)
     {
+    	Log.i("IMAGE", "constructor");
     	this.image = bs ;
     	this.sift = bs2 ;
     	this.surf = bs3 ;
@@ -75,126 +72,10 @@ public class Image {
     	this.n = n ;
     	this.infos = infos ;
     	
+    	
     }
     
-       
-    
-    /**
-     * Id de l'image
-     * @return
-     */
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/**
-	 * Image propre
-	 * @return
-	 */
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
-	/**
-	 * Descripteur SURF
-	 * @return
-	 */
-
-	public byte[] getSurf() {
-		return surf;
-	}
-
-
-
-	public void setSurf(byte[] surf) {
-		this.surf = surf;
-	}
-
-	/**
-	 * Descripteur SIFT
-	 * @return
-	 */
-
-	public byte[] getSift() {
-		return sift;
-	}
-
-
-
-	public void setSift(byte[] sift) {
-		this.sift= sift;
-	}
-
-	/**
-	 * Hstogramme de l'image
-	 * @return
-	 */
-
-	public byte[] getHist1() {
-		return hist1;
-	}
-
-
-
-	public void setHist1(byte[] hist1) {
-		this.hist1 = hist1;
-	}
-
-	/**
-	 * Ligne de la byte[]rice
-	 * @return
-	 */
-
-	public int getM() {
-		return m;
-	}
-
-
-
-	public void setM(int m) {
-		this.m = m;
-	}
-
-	/**
-	 * Colonne de la byte[]rice
-	 * @return
-	 */
-
-	public int getN() {
-		return n;
-	}
-
-
-
-	public void setN(int n) {
-		this.n = n;
-	}
-
-
-	/**
-	 * Informations sur l'image
-	 * @return
-	 */
-	public String getInfos() {
-		return infos;
-	}
-
-
-
-	public void setInfos(String infos) {
-		this.infos = infos;
-	}
-	
+  
 	/**
 	 * toString
 	 */
