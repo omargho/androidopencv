@@ -50,13 +50,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		// here we try inserting data in the on-create as a test
 		RuntimeExceptionDao<Image, Integer> dao = getSimpleDataDao();
 		
-				
-		// create some entries in the onCreate
-		Image simple = new Image();
-		dao.create(simple);
-		Image simple2 = new Image();
-		dao.create(simple2);
-		Log.i(DatabaseHelper.class.getName(), "created new entries in onCreate: ");
 	}
 
 	/**

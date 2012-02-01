@@ -24,6 +24,7 @@ import org.opencv.imgproc.Imgproc;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import android.content.Intent;
@@ -51,12 +52,16 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	Image image ;
 	int isRunning = 0 ;
 	
+	
+	
+	
 	/**
 	 * Convert a serializable object to byteArray
 	 * for the database 
 	 * @param obj
 	 * @return
 	 */
+		
 	
 	public byte[] ObjectToByteArray (Object obj)
 	{
@@ -452,8 +457,10 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 histSize.add(10);
 	 ranges.add(0.0f); ranges.add(256.0f);
 	 Mat hist = new Mat();
+	 Log.i("SERVICE HISTOGRAMS", "computing begin...");
 	 Imgproc.calcHist(images, channels, new Mat(), hist, histSize, ranges);
-				
+	 Log.i("SERVICE HISTOGRAMS", "histograms size is = " + histSize);
+	 
  	 return hist ;
  	}
  	
@@ -501,14 +508,16 @@ public class MyThread extends Thread{
 				 Log.i("SERVICE", "computing histogramms");
 				 Mat hist = computeHist(img) ;
 				 Log.i("SERVICE", "histogramms");
-				 
-								 
+				 								 
 				// get the dao
 				RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();					
-				
+								
 				// the new image class we want to store into the database
-				image = new Image(im, ObjectToByteArray(MatTOArray(sift)),ObjectToByteArray(MatTOArray(surf)),
-						ObjectToByteArray(MatTOArray(hist)), img.height(), img.width(), "on teste une image") ;
+				image = new Image(im, ObjectToByteArray(MatTOArray(sift)),
+						ObjectToByteArray(MatTOArray(surf)),
+						ObjectToByteArray(MatTOArray(hist)),
+						img.height(), img.width(), "on teste une image") ;
+				
 				
 				// create some entries in the onCreate
 				simpleDao.create(image);
@@ -525,15 +534,15 @@ public class MyThread extends Thread{
 					for(Image image : images)
 					{
 						ByteArrayToObject (image.hist1) ;					
-
 					}
-									}
-				//simpleDao.query(simpleDao.queryBuilder().where().like("nameColumn", "sift").prepare()) ;
-				
-			 	
-				// query for all sift elements in the database
+				}
+					
+			 	// query for all sift elements in the database
 				QueryBuilder<Image, Integer> q = simpleDao.queryBuilder().selectColumns("surf") ;
-				List<Image> result = q.query();				
+				// prepare our sql statement
+				PreparedQuery<Image> preparedQuery = q.prepare();
+				
+				List<Image> result = simpleDao.query(preparedQuery);				
 						
 				
 				if (result.isEmpty() == false)
@@ -554,9 +563,7 @@ public class MyThread extends Thread{
 				 {
 					// TODO Auto-generated catch block
 					    e.printStackTrace();
-				 }
-            
-            
+				 }     
 		}	 
 	}
 

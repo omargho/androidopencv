@@ -55,7 +55,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	public static boolean click ;
 	public static boolean store ;
 	InfosImageView view ;
-	private static final String TAG             = "Sample::Activity";
+	
 	
     private MenuItem            mItemAddPicture;
     private MenuItem            TakeAPicture;
@@ -104,7 +104,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
       
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG, "onCreateOptionsMenu");
+        Log.i("MenuOptions", "onCreateOptionsMenu");
         mItemAddPicture = menu.add("Ajouter image");
         mItemAddPicture.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			public boolean onMenuItemClick(MenuItem item) {
@@ -176,10 +176,15 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	  return obj;
 	}
 	
-   
+   /**
+    * cette methode permet de gerer les
+    * boutons options
+    * 
+    */
+	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "Menu Item selected " + item);
+        Log.i("Menu options", "Menu Item selected " + item);
         if (item == mItemAddPicture)
         {
         	store = true ;
