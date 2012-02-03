@@ -403,7 +403,7 @@ public class MyThread extends Thread{
 				
 				List<Image> result = simpleDao.query(preparedQuery);	
 								
-				List<Double> res = null ;
+				List<Double> res = new ArrayList<Double>() ;
 				if (result.isEmpty() == false)
 				{
 					Log.i("IMAGE RETRIEVED ", "we retrieved the column and his size is =" + result.size() );
