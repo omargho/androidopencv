@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -335,11 +337,14 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 Log.i("SERVICE CONVERT VECTOR ", "  element of vector =" + is.toString()) ;
 	
 	 m = Converters.vector_int_to_Mat(is) ;
+	 
+	 Mat mat = new Mat() ;
+	 m.convertTo(mat, CvType.CV_32F) ;
 	 Log.i("SERVICE CONVERT VECTOR", "Vector coveter size ="+is.size());
 	 
 	 Log.i("SERVICE CONVERT VECTOR", " Mat coveter size ="+ m.size());
 	 
-	 return m ;
+	 return mat ;
  }
  
  
@@ -373,6 +378,7 @@ public class MyThread extends Thread{
 				 
 				 Log.i("SERVICE", "computing histogramms");
 				 Mat hist = computeHist(img) ;
+				 Log.i("SERVICE", "type de la matrice ="+ hist.type());
 				 Log.i("SERVICE", "histogramms");
 				 				 
 				 byte[] test = ConvertMatrix(hist);
@@ -395,9 +401,9 @@ public class MyThread extends Thread{
 				// prepare our sql statement
 				PreparedQuery<Image> preparedQuery = q.prepare();
 				
-				List<Image> result = simpleDao.query(preparedQuery);				
-						
-				
+				List<Image> result = simpleDao.query(preparedQuery);	
+								
+				List<Double> res = null ;
 				if (result.isEmpty() == false)
 				{
 					Log.i("IMAGE RETRIEVED ", "we retrieved the column and his size is =" + result.size() );
@@ -405,8 +411,17 @@ public class MyThread extends Thread{
 					for(Image image : result)
 					{
 						Log.i("IMAGE RETRIEVED ", " sift size =" + image.hist.length) ;
-						ConvertVector( image.hist) ;
+						Mat m_comp = ConvertVector( image.hist) ;
+						Log.i("IMAGE RETRIEVED ", " native object =" + m_comp.nativeObj);
+						
+						double resu = Imgproc.compareHist(ConvertVector(test),m_comp , Imgproc.CV_COMP_BHATTACHARYYA);	 
+						res.add(resu) ;
+						Log.i("IMAGE RETRIEVED ", " hist comp =" + resu);
 					}
+					
+					double min = (double) Collections.min(res);
+					Log.i("IMAGE RETRIEVED ", " the nearest histo is =" + min);
+					
 				}
 				
 				 this.interrupt() ;
