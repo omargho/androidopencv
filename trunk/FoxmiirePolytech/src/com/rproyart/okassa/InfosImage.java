@@ -113,64 +113,6 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
         return true;
     }
     
-    /**
-	 * Do our sample database stuff.
-	 * grab image from surface holder
-	 * and store it into the database
-	 */
-    
-    /**
-	 * Convert a serializable object to byteArray
-	 * for the database 
-	 * @param obj
-	 * @return
-	 */
-	
-    public static byte[] ObjectToByteArray(Object obj) throws IOException {
-        byte[] bytes = null;
-        ByteArrayOutputStream bos = null;
-        ObjectOutputStream oos = null;
-        try {
-            bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(obj);
-            oos.flush();
-            bytes = bos.toByteArray();
-        } finally {
-            if (oos != null) {
-                oos.close();
-            }
-            if (bos != null) {
-                bos.close();
-            }
-        }
-        return bytes;
-    }
-    
-	
-	/**
-	 * Convert a byteArray to an Object
-	 *     
-	 * @param bytes
-	 * @return
-	 */
-	
-	public Object ByteArrayToObject (byte[] bytes)
-	{
-	  Object obj = null;
-	  try {
-	    ByteArrayInputStream bis = new ByteArrayInputStream (bytes);
-	    ObjectInputStream ois = new ObjectInputStream (bis);
-	    obj = ois.readObject();
-	  }
-	  catch (IOException ex) {
-	    //TODO: Handle the exception
-	  }
-	  catch (ClassNotFoundException ex) {
-	    //TODO: Handle the exception
-	  }
-	  return obj;
-	}
 	
    /**
     * cette methode permet de gerer les

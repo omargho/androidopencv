@@ -307,7 +307,15 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	}
  	
  
- 
+ /**
+  * Cette fonction permet de convertir une matrice
+  * en Arraylist de byte
+  * 
+  * @param mat
+  * @return
+  * 
+  * @author olympe kassa
+  */
  public byte[] ConvertMatrix(Mat mat)
  {
 	 Mat m = new Mat() ;
@@ -325,6 +333,15 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 return test ;
  }
  
+ /**
+  * Cette fonction permet de convertir une
+  * arraylist de byte en Matrice
+  * 
+  * @author olympe kassa
+  * 
+  */
+ 
+ 
  public Mat ConvertVector( byte[] byte_array)
  {
 	 Mat m = new Mat() ;
@@ -332,7 +349,6 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 Object test = ByteArrayToObject (byte_array) ;
 	 
 	 List<Integer> is  = (List<Integer>) test ;
-	 // mat.convertTo(m,CvType.CV_32SC1) ;
 	 Log.i("SERVICE CONVERT VECTOR", "list to convert size ="+ is.size());
 	 Log.i("SERVICE CONVERT VECTOR ", "  element of vector =" + is.toString()) ;
 	
@@ -363,6 +379,9 @@ public class MyThread extends Thread{
 		
 			 try{
 					
+				 int cpt =0 ;
+				 Image im_query = new Image() ;
+					
 				 File f = new File("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 				 byte[] im = convertImage(f) ;
 				  
@@ -371,9 +390,6 @@ public class MyThread extends Thread{
 				 Log.i("SERVICE", "image loaded");
 				 
 				 Log.i("SERVICE", "type de la matrice ="+ img.type());
-				 
-				 //Log.i("SERVICE", "type de la matrice ="+ img.convertTo( m, ));
-				 
 				 
 				 
 				 Log.i("SERVICE", "computing histogramms");
@@ -403,10 +419,13 @@ public class MyThread extends Thread{
 				
 				List<Image> result = simpleDao.query(preparedQuery);	
 								
-				List<Double> res = new ArrayList<Double>() ;
 				if (result.isEmpty() == false)
 				{
-					Log.i("IMAGE RETRIEVED ", "we retrieved the column and his size is =" + result.size() );
+					Log.i("IMAGE RETRIEVED ", "we retrieved the " +
+							"column and his size is =" + result.size() );
+					
+					double max = Imgproc.compareHist(ConvertVector(test),
+							ConvertVector( image.hist) , Imgproc.CV_COMP_BHATTACHARYYA);
 					
 					for(Image image : result)
 					{
@@ -414,13 +433,25 @@ public class MyThread extends Thread{
 						Mat m_comp = ConvertVector( image.hist) ;
 						Log.i("IMAGE RETRIEVED ", " native object =" + m_comp.nativeObj);
 						
-						double resu = Imgproc.compareHist(ConvertVector(test),m_comp , Imgproc.CV_COMP_BHATTACHARYYA);	 
-						res.add(resu) ;
+						// compare their histograms using the Bhattacharyya coefficient
+						// 0 = very low similarity
+						// 0.9 = good similarity
+						// 1 = perfect similarity
+	
+						double resu = Imgproc.compareHist(ConvertVector(test),
+								m_comp , Imgproc.CV_COMP_BHATTACHARYYA);	 
+						
+						if(resu > max)
+						{
+							max = resu ;
+							im_query = image ;
+						}
+						
 						Log.i("IMAGE RETRIEVED ", " hist comp =" + resu);
 					}
-					
-					double min = (double) Collections.min(res);
-					Log.i("IMAGE RETRIEVED ", " the nearest histo is =" + min);
+											
+					Log.i("IMAGE RETRIEVED ", " using histogramms the " +
+							"nearest image is =" + im_query.toString());
 					
 				}
 				
