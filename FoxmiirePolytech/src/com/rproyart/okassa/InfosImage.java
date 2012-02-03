@@ -5,13 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
-
 import org.opencv.core.Mat;
 import com.rproyart.okassa.InfosImageService;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -98,7 +94,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 		 
 		 Log.i("ACTIVITY CREATE", "BROADCAST TYPE DATABASE");
 		 
-		 RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();
+		
 		       
     }
       
