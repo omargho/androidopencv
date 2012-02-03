@@ -15,12 +15,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.util.ByteArrayBuffer;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.KeyPoint;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -32,11 +34,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-
-
-
-
-
 
 
 public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
@@ -124,9 +121,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 		 
 		 MyThread myThread = new MyThread();
 		 myThread.start();
-		 
-
-		  
+  
 	}
     
 	@Override
@@ -286,162 +281,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 			return descriptors;
 			
 	}
-	
-  	 
-  	 
- 	/**
- 	 * Cette methode nous permet de convertir un objet en 
- 	 * en byte dans notre cas il s'agit de récuperer l'
- 	 * élément m(i,j) de notre matrice.
- 	 * 
- 	 * @param obj
- 	 * @return
- 	 * @throws IOException
- 	 * 
- 	 * @author Olympe Kassa
- 	 * 
- 	 * 
- 	 * 
- 	 */
- 	
- 	public byte[] toByteArray (Object obj)
- 	{
- 	  byte[] bytes = null;
- 	  ByteArrayOutputStream bos = new ByteArrayOutputStream();
- 	  try {
- 	    ObjectOutputStream oos = new ObjectOutputStream(bos); 
- 	    oos.writeObject(obj);
- 	    oos.flush(); 
- 	    oos.close(); 
- 	    bos.close();
- 	    bytes = bos.toByteArray ();
- 	  }
- 	  catch (IOException ex) {
- 	    //TODO: Handle the exception
- 	  }
- 	  return bytes;
- 	}
-
-  	 
- 	/**
- 	 *	Cette methode nous permet de convertir une matrice 
- 	 * tableau d'objet de bytes dans notre cas il 
- 	 * s'agit de récuperer notre matrice et de mettre ses 
- 	 * éléments de type byte dans un tableau. chaque elelment 
- 	 * de la matrice est un octet et le tableau sera seialisé
- 	 * 
- 	 *  @author Olympe Kassa
- 	 * 
- 	 * @param mat
- 	 * @return
- 	 */
- 	
- 	
- 	/* ==========Convert a double to his byte value=============== */
- 	 
- 	public static byte[] toByta(double data) {
- 	    return toByta(Double.doubleToRawLongBits(data));
- 	}
- 	
- 	//==========Convert an array of double to an array of byte=============
- 	 
- 	public static byte[] toByteElement(double[] data) {
- 	    if (data == null) return null;
- 	    // ----------
- 	    byte[] byts = new byte[data.length * 8];
- 	    for (int i = 0; i < data.length; i++)
- 	        System.arraycopy(toByta(data[i]), 0, byts, i * 8, 8);
- 	    return byts;
- 	}
- 	
- 	// ===========Convert a Matrix of double[] to an ArrayList of byte[]=====================
- 	// because each element of the matrix is a double[]
- 	
- 	public ArrayList<byte[]>  toByteArrayGlob (Mat mat)
- 	{
- 	  ArrayList<byte[]> tab = new ArrayList<byte[]>() ;
- 		
- 	  byte[] bytes = null ;
- 	  
- 	  int m=mat.height() ;
- 	  int n = mat.width() ;
- 	  int i,j;
- 	  
- 	  for(i=0;i<m;i++)
- 	  {
- 		  for(j=0;j<n;j++)
- 		  {
- 			
- 			double[] value = mat.get(i, j);
- 			
- 			bytes = toByteElement(value) ;
- 			
- 			tab.add(bytes) ;
-			
- 		  }
- 	  }	 
- 	  
- 	  return tab;
- 	}
- 	
- 	public ArrayList<double[]>  MatTOArray (Mat mat)
- 	{
- 	  ArrayList<double[]> tab = new ArrayList<double[]>() ;
- 			  
- 	  int m=mat.height() ;
- 	  int n = mat.width() ;
- 	  int i,j;
- 	  
- 	  for(i=0;i<m;i++)
- 	  {
- 		  for(j=0;j<n;j++)
- 		  {
- 			
- 			double[] value = mat.get(i, j);
- 			 			
- 			tab.add(value) ;
-			
- 		  }
- 	  }
- 	 Log.i("MATRIX TO ARRAY", "size = "+ tab.size());
- 	  
- 	  return tab;
- 	}
- 	
- 	
- 	
- 	/**
- 	 * Cette methode nous permet de convertir une liste de  bytearray
- 	 * en Matrice de pouvoir la reutiliser avec le kNN par exemple
- 	 * 
- 	 * @param bytes
- 	 * @return
- 	 * 
- 	 * @author Olympe Kassa
- 	 * 
- 	 */
- 	    
- 	public Mat toMatrice(List<byte[]> bytes,int n) throws IOException, ClassNotFoundException
- 	{
- 	 
- 	  int j=0 ;
- 	  int i=0;
- 	  int k=0;
- 	  Mat mat = new Mat() ;
- 	  Iterator<byte[]> iter = bytes.iterator();
-	  	while(iter.hasNext())
-	  	{
-	  		while(j<n)
-	  		{
-		  		mat.put(i, j, bytes.get(k)) ;
-		  		k++;
-		  		j++;
-	  		}
-	  		  i++ ;
-	  	}
- 	  return mat;
- 	} 
-  	 
+	 	 
 	
  	/* Compute histogramm */ 
  	
@@ -465,6 +305,45 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  	}
  	
  
+ 
+ public byte[] ConvertMatrix(Mat mat)
+ {
+	 Mat m = new Mat() ;
+	 mat.convertTo(m,CvType.CV_32SC1) ;
+	 Log.i("SERVICE", "mat converted size ="+ m.size());
+	 
+	 List<Integer> is = new ArrayList<Integer>() ;
+	 Converters.Mat_to_vector_int(m, is) ;
+	 Log.i("SERVICE", "Matrix coveter size ="+is.size());
+	 
+	 byte[] test = ObjectToByteArray(is);
+	 Log.i("SERVICE", " byte coveter size ="+ test.length);
+	 
+	 
+	 return test ;
+ }
+ 
+ public Mat ConvertVector( byte[] byte_array)
+ {
+	 Mat m = new Mat() ;
+	 
+	 Object test = ByteArrayToObject (byte_array) ;
+	 
+	 List<Integer> is  = (List<Integer>) test ;
+	 // mat.convertTo(m,CvType.CV_32SC1) ;
+	 Log.i("SERVICE CONVERT VECTOR", "list to convert size ="+ is.size());
+	 Log.i("SERVICE CONVERT VECTOR ", "  element of vector =" + is.toString()) ;
+	
+	 m = Converters.vector_int_to_Mat(is) ;
+	 Log.i("SERVICE CONVERT VECTOR", "Vector coveter size ="+is.size());
+	 
+	 Log.i("SERVICE CONVERT VECTOR", " Mat coveter size ="+ m.size());
+	 
+	 return m ;
+ }
+ 
+ 
+ 
 public class MyThread extends Thread{
 	
 	private volatile boolean stop = false;
@@ -475,8 +354,7 @@ public class MyThread extends Thread{
 	
 	@Override
    public void run() {
-		  // TODO Auto-generated method stub
-			
+		  // TODO Auto-generated method stub	
 		
 			 try{
 					
@@ -487,58 +365,33 @@ public class MyThread extends Thread{
 				 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 				 Log.i("SERVICE", "image loaded");
 				 
-				 Log.i("SERVICE", "detecting features with SIFT");
-				 List<KeyPoint> k_sift = detectFeatures(img,0);
-				 Log.i("DETECTFEATURES", "SIFT keypoints "+ k_sift.size());
+				 Log.i("SERVICE", "type de la matrice ="+ img.type());
 				 
-				 Log.i("SERVICE", "detecting features with SURF");
-				 List<KeyPoint> k_surf = detectFeatures(img,1);
-				 Log.i("DETECTFEATURES", "SURF keypoints "+ k_surf.size());
+				 //Log.i("SERVICE", "type de la matrice ="+ img.convertTo( m, ));
 				 
 				 
-				 Log.i("SERVICE", "computing descriptors with SIFT");
-				 Mat sift = computeDescriptors(img,k_sift,0) ;
-				 Log.i("COMPUTEDESCRIPTORS"," SIFT descriptors size is :"+ sift.size());
-						 
-				 Log.i("SERVICE", "computing descriptors with SURF");
-				 Mat surf = computeDescriptors(img,k_surf,1) ;
-				 			
-				 Log.i("COMPUTEDESCRIPTORS"," SURF descriptors size is :"+ surf.size());
 				 
 				 Log.i("SERVICE", "computing histogramms");
 				 Mat hist = computeHist(img) ;
 				 Log.i("SERVICE", "histogramms");
-				 								 
+				 				 
+				 byte[] test = ConvertMatrix(hist);
+				 
 				// get the dao
 				RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();					
-								
-				// the new image class we want to store into the database
-				image = new Image(im, ObjectToByteArray(MatTOArray(sift)),
-						ObjectToByteArray(MatTOArray(surf)),
-						ObjectToByteArray(MatTOArray(hist)),
-						img.height(), img.width(), "on teste une image") ;
-				
-				
+					
+				Log.i("SERVICE", "creating new histograms");
+				image = new Image(test, "l'image que l'on utilise") ;
+			
 				// create some entries in the onCreate
+				Log.i("SERVICE", "inserting the new image");
 				simpleDao.create(image);
-				
-				
+
 				// trying to retrieve data
 				Log.i("IMAGE DATABASE ", "we get the data we inserted into the database");
-				List<Image> images = simpleDao.queryForAll() ;
-				
-				if (images.isEmpty() == false)
-				{
-					Log.i("IMAGE RETRIEVED ", " size is =" + images.size() );
-					
-					for(Image image : images)
-					{
-						ByteArrayToObject (image.hist1) ;					
-					}
-				}
 					
 			 	// query for all sift elements in the database
-				QueryBuilder<Image, Integer> q = simpleDao.queryBuilder().selectColumns("surf") ;
+				QueryBuilder<Image, Integer> q = simpleDao.queryBuilder().selectColumns("hist") ;
 				// prepare our sql statement
 				PreparedQuery<Image> preparedQuery = q.prepare();
 				
@@ -551,7 +404,8 @@ public class MyThread extends Thread{
 					
 					for(Image image : result)
 					{
-						Log.i("IMAGE RETRIEVED ", " sift size =" + image.sift.length) ;
+						Log.i("IMAGE RETRIEVED ", " sift size =" + image.hist.length) ;
+						ConvertVector( image.hist) ;
 					}
 				}
 				

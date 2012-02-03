@@ -1,7 +1,5 @@
 package com.rproyart.okassa;
 
-import org.opencv.core.Mat;
-
 import android.util.Log;
 
 import com.j256.ormlite.field.DataType;
@@ -31,48 +29,24 @@ public class Image {
 	   @DatabaseField(generatedId = true)
        int id;
        
-	   @DatabaseField(index = true)
-	   String string;
-	   
 	   @DatabaseField(dataType = DataType.BYTE_ARRAY)
-       byte[] image;
-	
-	   @DatabaseField(dataType = DataType.BYTE_ARRAY)
-       byte[] sift;   
-       		
-	   @DatabaseField(dataType = DataType.BYTE_ARRAY)
-       byte[] surf;
-       
-	   @DatabaseField(dataType = DataType.BYTE_ARRAY)
-       byte[] hist1;
-       
-       @DatabaseField
-       int m;
-       
-       @DatabaseField
-       int n;
-       
+       byte[] hist;
+              
        @DatabaseField
        String infos;
-       
+ 
        
     public Image()
     {
-    	Log.i("IMAGE", "constructor");
-    }
-    
-    public Image(byte[] bs, byte[] bs2, byte[] bs3, byte[] bs4, int m, int n, String infos)
+       	Log.i("IMAGE", "hist constructor");
+
+    }   
+       
+    public Image(byte[] hist, String infos)
     {
-    	Log.i("IMAGE", "constructor");
-    	this.image = bs ;
-    	this.sift = bs2 ;
-    	this.surf = bs3 ;
-    	this.hist1 = bs4 ;
-    	this.m = m ;
-    	this.n = n ;
+    	Log.i("IMAGE", "hist constructor");
+    	this.hist = hist ;
     	this.infos = infos ;
-    	
-    	
     }
     
   
@@ -84,8 +58,6 @@ public class Image {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id=").append(id);
 		sb.append(", ").append("id=").append(id);
-		sb.append(", ").append("m=").append(m);
-		sb.append(", ").append("n=").append(n);
 		sb.append(", ").append("infos=").append(infos);
 		return sb.toString();
 	}
