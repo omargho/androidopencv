@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="bottom"
+    android:orientation="vertical" >
+
+	<ImageView 
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 android:id="@+id/imageView"
+	 />
+    
+    <Button
+        android:id="@+id/mbuttonRetour"
+        android:layout_width="80px"
+        android:layout_height="40px"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:text="Retour" >
+    </Button>
+</LinearLayout>
