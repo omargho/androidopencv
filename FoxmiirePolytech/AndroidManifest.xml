@@ -12,7 +12,7 @@
     
     <application
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name">
                
         <activity android:label="@string/app_name" android:name=".InfosImage" >
             <intent-filter >
@@ -21,7 +21,9 @@
             </intent-filter>
         </activity>
         
-        <service android:name=".InfosImageService" />   
+        <service android:name=".InfosImageService" />  
+        <activity android:name=".AnswerActivity" />
+        
     </application>
 
 </manifest>

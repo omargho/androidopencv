@@ -453,11 +453,13 @@ public class MyThread extends Thread{
 					Log.i("IMAGE RETRIEVED ", " using histogramms the " +
 							"nearest image is =" + im_query.toString());
 					
+				//im_query.id
+					
 				}
 				
 				 this.interrupt() ;
 				 stopSelf() ;
-				  //appel de la base de donnÃ©es et au kNN
+				  //appel de la base de données et au kNN
 				 }
 				 catch(Exception e)
 				 {

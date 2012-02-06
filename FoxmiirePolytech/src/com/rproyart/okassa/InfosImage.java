@@ -68,7 +68,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
         Log.i("INFOS ACTIVITY CREATE", "getting all surfaceholder");
         
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        Log.i("INFOS ACTIVITY CREATE", "frame orienation");
+        Log.i("INFOS ACTIVITY CREATE", "frame orientation");
         //setContentView(R.layout.acceuil);
         
         
@@ -93,9 +93,6 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
          */
 		 
 		 Log.i("ACTIVITY CREATE", "BROADCAST TYPE DATABASE");
-		 
-		
-		       
     }
       
     @Override
@@ -163,13 +160,21 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	   			 Log.i("ACTIVITY START", "we wait a little bit to be sure the picture is saved");
 	   			 SystemClock.sleep(1000) ;   			
 	   			 Log.i("ACTIVITY START", "picture saved");
+	   			 
+	   			 //Launching a service to compute image recognition
 	   			 Intent i= new Intent(InfosImage.this, InfosImageService.class);
 	   			 Log.i("ACTIVITY START", "starting service");
 	   			 Log.i("ACTIVITY START", "launching service");
-	   			 startService(i) ;      	 
-	               }
-	          });
-	     
+	   			 startService(i) ;
+	   			 
+	   			 //Launching an activity to feedback the answer
+	   			 Intent iBis = new Intent(InfosImage.this, AnswerActivity.class);
+	   			 Log.i("ACTIVITY START", "starting AnswerActivity");
+	   			 Log.i("ACTIVITY START", "launching AnswerActivity");
+	   			 startActivity(iBis);
+	   			 
+	             }
+	          });	    
     }
 
 
