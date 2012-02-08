@@ -26,39 +26,44 @@ import com.j256.ormlite.table.DatabaseTable;
 
 public class Image {
 	
-	   @DatabaseField(generatedId = true)
-       int id;
-       
-	   @DatabaseField(dataType = DataType.BYTE_ARRAY)
-       byte[] hist;
-              
-       @DatabaseField
-       String infos;
- 
-       
-    public Image()
-    {
-       	Log.i("IMAGE", "hist constructor");
+	// INTEGER AUTOINCREMEMENT PRIMARY KEY
+    @DatabaseField(generatedId = true)
+    int id;
+    // HISTOGRAM OF IMAGE
+    @DatabaseField(dataType = DataType.BYTE_ARRAY)
+    byte[] hist;
+     // INFORMATIONS OF IMAGE LIKE AUTHOR, HEIGHT WIDTH....      
+    @DatabaseField
+    String infos;
 
-    }   
-       
-    public Image(byte[] hist, String infos)
-    {
-    	Log.i("IMAGE", "hist constructor");
-    	this.hist = hist ;
-    	this.infos = infos ;
-    }
+    @DatabaseField
+    String nom;
+
     
-  
-	/**
-	 * toString
-	 */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("id=").append(id);
-		sb.append(", ").append("id=").append(id);
-		sb.append(", ").append("infos=").append(infos);
-		return sb.toString();
-	}
+ public Image()
+ {
+     Log.i("IMAGE", "hist constructor");
+
+ }   
+    
+ public Image(byte[] hist, String infos, String nom)
+ {
+     Log.i("IMAGE", "hist constructor");
+     this.hist = hist ;
+     this.infos = infos ;
+     this.nom = nom ;
+ }
+ 
+
+     /**
+      * toString
+      */
+     @Override
+     public String toString() {
+             StringBuilder sb = new StringBuilder();
+             sb.append("id=").append(id);
+             sb.append(", ").append("id=").append(id);
+             sb.append(", ").append("infos=").append(infos);
+             return sb.toString();
+     }
 }

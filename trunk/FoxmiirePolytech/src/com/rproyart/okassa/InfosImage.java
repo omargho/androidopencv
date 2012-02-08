@@ -1,20 +1,42 @@
 package com.rproyart.okassa;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.utils.Converters;
+
 import com.rproyart.okassa.InfosImageService;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -23,13 +45,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 
 
 /**
@@ -51,12 +74,243 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	public static boolean click ;
 	public static boolean store ;
 	InfosImageView view ;
-	
+	SurfaceView v1  ;
+	SurfaceView v2 ;
 	
     private MenuItem            mItemAddPicture;
     private MenuItem            TakeAPicture;
 	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-	  	  	
+	String Path = "android_asset/" ;
+	
+ 	/**
+ 	 * 
+ 	 *  Compute histogramm of an 
+ 	 *  image to compare with others 
+ 	 *  
+ 	 *  @author olympe kassa
+ 	 *  */ 
+ 	
+ public byte[] computeHist(Mat img)
+ 	{
+	 
+	 ArrayList<Mat> images = new ArrayList<Mat>();
+	 List<Integer> channels = new ArrayList<Integer>();
+	 List<Integer> histSize = new ArrayList<Integer>();
+	 List<Float> ranges = new ArrayList<Float>();           
+	                
+     images.add(img);
+     channels.add(0);
+	 histSize.add(10);
+	 ranges.add(0.0f); ranges.add(256.0f);
+	 Mat hist = new Mat();
+	 Log.i("SERVICE HISTOGRAMS", "computing begin...");
+	 Imgproc.calcHist(images, channels, new Mat(), hist, histSize, ranges);
+	 Log.i("SERVICE HISTOGRAMS", "histograms size is = " + histSize);
+	 
+	 Mat m = new Mat() ;
+	 
+	 hist.convertTo(m,CvType.CV_32SC1) ;
+	 Log.i("SERVICE", "mat converted size ="+ m.size());
+	 
+	 List<Integer> is = new ArrayList<Integer>() ;
+	 Converters.Mat_to_vector_int(m, is) ;
+	 Log.i("SERVICE", "Matrix coveter size ="+is.size());
+	 	 
+	 byte[] bytes = null;
+	  ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	  try 
+	  {	  
+	    ObjectOutputStream oos = new ObjectOutputStream(bos); 
+	    oos.writeObject(is);
+	    oos.flush(); 
+	    oos.close(); 
+	    bos.close();
+	    bytes = bos.toByteArray ();
+	  }
+	  catch (IOException ex) {
+	    //TODO: Handle the exception
+	  }
+
+	 Log.i("SERVICE", " byte conveter size ="+ bytes.length);
+	
+ 	 return bytes ;
+ 	}
+ 
+ public String loadDataImageFileFromAsset(String image) 
+ {
+		// load text
+	 	try {
+	 	    	// get input stream for text
+		    	InputStream is = getAssets().open("InfosFolder/"+image);
+		    	// check size
+		    	int size = is.available();
+		    	// create buffer for IO
+		    	byte[] buffer = new byte[size];
+		    	// get data to buffer
+		    	is.read(buffer);
+		    	// close stream
+		    	is.close();
+		    	// set result to TextView
+		    	 Log.i("POPULATE IMAGE DATABASE", "reading file for images titles");	
+	 	}
+	 	catch (IOException ex) {
+	 		
+	 	}
+	 	 
+	return image;
+	 
+ }
+ 
+ 
+ public String loadDataImageFromAsset(String image) 
+ {
+	 
+	 String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
+
+ 	// load image
+ 	try {
+	    	// get input stream of image
+	    	InputStream ims = getAssets().open("ImageFolder/"+image);
+	    	Log.i("LOAD DATA FROM ASSETS", "name of image ="+"ImageFolder/"+image);
+	    	// load image as Drawable
+	    	Drawable d = Drawable.createFromStream(ims, null);
+	    	
+	    	// set image to a ImageView
+	    	ImageView mImage = new ImageView(getBaseContext()) ; 
+	    	
+	    	Log.i("LOAD DATA FROM ASSETS", "new image");
+			mImage.setImageDrawable(d);
+
+	    	int h = mImage.getHeight();
+	    	int w = mImage.getWidth();
+	    	
+	    	Log.i("LOAD DATA FROM ASSETS", "height="+h+"weight"+w);
+	    	
+	    	BufferedInputStream bufferedInputStream = new BufferedInputStream(ims);
+
+	    	Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
+	    	
+	    	mImage.setImageBitmap(bmp) ;
+	    	
+	    	
+	    	
+	    	Log.i("LOAD DATA FROM ASSETS", "bmp is decoded");
+	    	       	
+            File file = new File(_path + "/"+ "todatabase.jpg");
+            FileOutputStream fos;
+            
+            try 
+            {
+                fos = new FileOutputStream(file);
+               // bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.close();
+            } 
+            catch (FileNotFoundException e) {
+                Log.e("convert image", "FileNotFoundException", e);
+            } 
+            catch (IOException e) {
+                Log.e("convert image", "IOEception", e);
+            } 	
+ 	}
+ 	catch(IOException ex) {
+ 		
+ 	}
+ 	
+ 	return _path+"/"+"todatabase.jpg" ;
+ }
+ 
+	
+	/**
+	 * Cette fonction est utilisée pour peupler
+	 * la base de données de notre application
+	 * au démarrage.
+	 * 
+	 * 
+	 * @param image_path
+	 * @author olympe kassa
+	 */
+ 	public void PopulateDataBase()
+ 	{
+ 		Log.i("POPULATE DATABASE", "loading images into database");
+            	// lecture du fichier des titres des images
+            	try { 
+            			
+            		Log.i("POPULATE DATABASE", "reading titles of " +
+            	       		"images ");
+            		            		            	       
+            	       BufferedReader  br = new BufferedReader(
+            	    		   new InputStreamReader(getAssets().open("titresImages.txt"))); 
+            	       
+            	       String line; 
+            	       
+            	       Log.i("POPULATE DATABASE", "start reading images...");
+            	       while((line = br.readLine()) != null) 
+            	       {
+            	    	   Log.i("POPULATE DATABASE", "nom image="+line);
+            	    	   // on récupère le chemin de l'image et 
+            	    	   // le titre de l'image et on on ajoute 
+            	    	   // l'image a la base de données
+            	    	  
+            	    	    
+            	    	    //PopulateDataBaseImage(img, line);
+            	        } 
+            	      br.close();
+            	       }
+            	      catch (IOException e) 
+            	     { 
+            	        e.printStackTrace(); 
+            	     }
+            	
+                // on recupere l'lélément que l'on charge en db 
+            	
+ 	}
+ 	
+ 	/**
+ 	 *  Cette fonction est utilisée pour inserer dans la
+ 	 *  base de données une image contenue dans le 
+ 	 *  dossier assets de notre application
+ 	 * 
+ 	 * @param image_path
+ 	 * @param image_name
+ 	 */
+ 
+public void PopulateDataBaseImage(String image_path, String image_name)
+{
+		  
+		 Log.i("POPULATE DATABASE IMAGE", "loading image");
+		 Mat img = Highgui.imread(image_path) ;
+	   		
+	   		if ( img.empty() == false)
+	   		{	
+	   			Log.i("POPULATE DATABASE IMAGE", "image is empty");
+	   		}
+	   		
+		 Log.i("POPULATE DATABASE IMAGE", "image loaded");
+		 
+		 Log.i("POPULATE DATABASE IMAGE", "type de la matrice ="+ img.type());
+		
+
+	     Log.i("POPULATE DATABASE IMAGE", "computing histogramms");
+	     byte[] hist = computeHist(img) ;
+	    
+	     Log.i("POPULATE DATABASE IMAGE", "histogramms");
+	                                     
+	 		 
+	    // get the dao
+	    RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();                                 
+	            
+	    Log.i("POPULATE DATABASE IMAGE", "creating new image into database ");
+	    String infos_image = null;
+		Image image = new Image(hist,image_name,infos_image);
+
+	    // create some entries in the onCreate
+	    Log.i("POPULATE DATABASE IMAGE", "inserting the new image");
+	    simpleDao.create(image);
+
+}
+	
+	
+	
   	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +331,11 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
         /*Original Contentview*/
         Log.i("INFOS ACTIVITY CREATE", "we had the contentView");
         view = new InfosImageView(this) ;
+        // vue d'acceuil
+        //setContentView(R.layout.acceuil);
         setContentView(view);
+
+        
         getWindow().setFormat(PixelFormat.UNKNOWN);
        
         
@@ -88,12 +346,11 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
         this.addContentView(viewControl, layoutParamsControl);
         Log.i("ACTIVITY CREATE", "reglage OK"); 
         
-        /**
-         * Start activity of database
-         */
-		 
-		 Log.i("ACTIVITY CREATE", "BROADCAST TYPE DATABASE");
+		 Log.i("ACTIVITY CREATE", "POPULATING THE DATABASE");
+		 this.PopulateDataBase() ;
+		
     }
+    
       
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,11 +424,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	   			 Log.i("ACTIVITY START", "launching service");
 	   			 startService(i) ;
 	   			 
-	   			 //Launching an activity to feedback the answer
-	   			 Intent iBis = new Intent(InfosImage.this, AnswerActivity.class);
-	   			 Log.i("ACTIVITY START", "starting AnswerActivity");
-	   			 Log.i("ACTIVITY START", "launching AnswerActivity");
-	   			 startActivity(iBis);
+	   			 
 	   			 
 	             }
 	          });	    
