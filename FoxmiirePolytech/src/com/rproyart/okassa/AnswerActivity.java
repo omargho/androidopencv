@@ -15,8 +15,11 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,7 +90,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 					   * On dessine l'image que l'on a trouvé
 					   */
 					  
-					  drawPic(intent.getStringExtra("image_name"),
+					  drawPic(Path + intent.getStringExtra("image_name"),
 							  intent.getStringExtra("image_infos")) ;		  
 	              } 
 			}
@@ -122,10 +125,23 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
          */
         if(imgFile.exists())
         {
+        	Log.i("DRAW PICTURE", "get the layout...");
+        	View mlayout = findViewById(R.id.RelativeLayout1);
 
+        	Log.i("DRAW PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imgView = (ImageView)findViewById(R.id.imageView1);
-            imgView.setImageBitmap(myBitmap);
+            Log.i("DRAW PICTURE", "bmp size is ="+myBitmap.getWidth()+"*"+myBitmap.getHeight());
+            
+            Log.i("DRAW PICTURE", "get drawable...");
+        	Drawable d =new BitmapDrawable(myBitmap);
+        	Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
+        	mlayout.setBackgroundDrawable(d) ;
+        	//mlayout.setBackgroundResource(0);
+        }
+        else
+        {
+        	Log.i("DRAW PICTURE", "file doesn't exist...");
+        	
         }
         
         /*
@@ -149,7 +165,8 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 	    	   		while((line = br.readLine()) != null) 
 	 	    	   		{
 	 	    	   			
-	 	    	   			strBuild.append(line);
+	 	    	   			strBuild.append(line+"\n");
+	 	    	   		    
 				       
 	 	    	   		}
 	 	       		} 
