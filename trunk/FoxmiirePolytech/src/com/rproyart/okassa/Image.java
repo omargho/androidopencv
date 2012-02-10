@@ -32,21 +32,26 @@ public class Image {
     // HISTOGRAM OF IMAGE
     @DatabaseField(dataType = DataType.BYTE_ARRAY)
     byte[] hist;
-     // INFORMATIONS OF IMAGE LIKE AUTHOR, HEIGHT WIDTH....      
+      
+// nom de l'image ex : 4cantons.jpg
+    @DatabaseField
+    String nom;
+    
+    
+ // INFORMATIONS OF IMAGE LIKE AUTHOR, HEIGHT WIDTH....
     @DatabaseField
     String infos;
 
-    @DatabaseField
-    String nom;
+  
 
     
  public Image()
  {
+	// needed by ormlite
      Log.i("IMAGE", "hist constructor");
-
  }   
     
- public Image(byte[] hist, String infos, String nom)
+ public Image(byte[] hist, String nom,String infos)
  {
      Log.i("IMAGE", "hist constructor");
      this.hist = hist ;

@@ -2,9 +2,8 @@ package com.rproyart.okassa;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
@@ -14,7 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -35,7 +35,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     
-	String Path = "/FoxmiirePolytech/assets/" ;
+	String Path = "/data/data/com.rproyart.okassa/app_asset_to_local/";
 	LocalBroadcastManager mLocalBroadcastManager;
 	BroadcastReceiver mReceiver;
 	ImageView imgView ;
@@ -63,7 +63,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         
 		Context context = this.getBaseContext();
         imgView = new ImageView(context);
-        imgView = (ImageView)findViewById(R.id.imageView1);
+       
         
         textView = new TextView(context) ;
         textView = (TextView)findViewById(R.id.textView1) ;
@@ -111,38 +111,51 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     public void drawPic(String nom, String infos )
     {
     	StringBuilder strBuild = new StringBuilder();
-        File imgFile = new  File(Path+nom);
+        File imgFile = new  File(nom);
         String line; 
-        File yourFile ;
-        FileReader filereader;
-        
-        
+      
+        /*
+         * on affiche l'image trouvée dans 
+         * le background de la vue et les infos dans 
+         * une fenetre dialogue
+         * 
+         */
         if(imgFile.exists())
         {
-           imgView.setImageURI(Uri.fromFile(imgFile));
-            
-           yourFile = new File(infos);
- 	       
+
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imgView = (ImageView)findViewById(R.id.imageView1);
+            imgView.setImageBitmap(myBitmap);
+        }
+        
+        /*
+         * on recupère le text correspondant à l'image
+         * 
+         */
+         
  	       Log.i("DRAW PICTURE", "reading file for images titles");
- 	       
- 	       
-		try {
-			   filereader = new FileReader(yourFile);
-	 	       Log.i("DRAW PICTURE", "get the file of infos...");
-	 	       
-	 	       BufferedReader br = new BufferedReader(filereader);
-	 	       
-	 	       Log.i("DRAW PICTURE", "read file of infos...");
+	
+			   // get input stream for text
+			   // infos = Path_infos+infos_file stored in database
+			   // Path_infos = InfosFolder/ 
+			
 	 	       try {
+	 	    	   
+	 	    	  Log.i("DRAW PICTURE", "get the file of infos...");
+	 	    	  BufferedReader  br = new BufferedReader(
+	 	 	    		   new InputStreamReader(getAssets().open(infos)));
+	 	    	  
+	 	    	 Log.i("DRAW PICTURE", "read file of infos...");
 	 	    	   		while((line = br.readLine()) != null) 
 	 	    	   		{
+	 	    	   			
 	 	    	   			strBuild.append(line);
 				       
 	 	    	   		}
 	 	       		} 
 	 	       		catch (IOException e) 
 	 	       		{
-				// TODO Auto-generated catch block
+				       // TODO Auto-generated catch block
 	 	       			e.printStackTrace();
 	 	       		} 
 	            
@@ -151,14 +164,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 	 	       	Log.i("DRAW PICTURE", "infos to show to UI ="+strBuild);	
 		        textView.setText(strBuild) ;
 		        
-		        
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 	       
-
-        }
+ 	      
     }
 
     @Override
@@ -169,7 +175,13 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		 //drawing the bmp on the ImageView
         Log.i("INFOS ACTIVITY CREATE", "retrieve the good image");
 
-		
+        Log.i("ACTIVITY START", "set up filter of intents");
+	    IntentFilter intentFilter = new IntentFilter();
+	    intentFilter.addAction(InfosImageService.ACTION_UPDATE);
+	    
+	    Log.i("ACTIVITY START", "we register to receiver");
+	    registerReceiver(mReceiver, intentFilter);
+
 	}
 
 
@@ -178,5 +190,9 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         super.onDestroy();
         mLocalBroadcastManager.unregisterReceiver(mReceiver);
     }
+    
+    
+    
+    
 
 }
