@@ -132,11 +132,31 @@ public abstract class InfosImageViewBase extends SurfaceView implements SurfaceH
 	                	canvas.drawBitmap(bmp,w,h, null) ;
 	                	String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
 	                    File file = new File(_path + "/"+ "picture.jpg");
+	                    
 	                    FileOutputStream fos;
+	                    
+	                    /*
+	                     * on utilise le storage interne pour preserver 
+	                     * les données 
+	                     * 
+	                     */
+	                    
+	                    //Creating an internal dir;
+	                    File mydir = getContext().getDir("pictureDir", Context.MODE_PRIVATE); 
+	                    //Getting a file within the dir.
+	                    File fileWithinMyDir = new File(mydir, "picture.jpg"); 
+	                    FileOutputStream out ;
+	                    
+	                    
 	                    try {
 	                        fos = new FileOutputStream(file);
+	                        out= new FileOutputStream(fileWithinMyDir); //Use the stream as usual
+	                        											//to write into the file
 	                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+	                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
+	                        out.close() ;
 	                        fos.close();
+	                        
 	                        InfosImage.click = false ;
 	                    } catch (FileNotFoundException e) {
 	                        Log.e("Panel", "FileNotFoundException", e);

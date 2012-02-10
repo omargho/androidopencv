@@ -1,12 +1,10 @@
 package com.rproyart.okassa;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,13 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -51,8 +43,9 @@ import android.view.Window;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+
 
 
 /**
@@ -80,7 +73,8 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
     private MenuItem            mItemAddPicture;
     private MenuItem            TakeAPicture;
 	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-	String Path = "android_asset/" ;
+	String Path_Image = "ImageFolder/" ;
+	String Path_infos = "InfosFolder/";
 	
  	/**
  	 * 
@@ -103,18 +97,18 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	 histSize.add(10);
 	 ranges.add(0.0f); ranges.add(256.0f);
 	 Mat hist = new Mat();
-	 Log.i("SERVICE HISTOGRAMS", "computing begin...");
+	 Log.i("SERVICE HISTOGRAMS ACTIVITY", "computing begin...");
 	 Imgproc.calcHist(images, channels, new Mat(), hist, histSize, ranges);
-	 Log.i("SERVICE HISTOGRAMS", "histograms size is = " + histSize);
+	 Log.i("SERVICE HISTOGRAMS ACTIVITY", "histograms size is = " + histSize);
 	 
 	 Mat m = new Mat() ;
 	 
 	 hist.convertTo(m,CvType.CV_32SC1) ;
-	 Log.i("SERVICE", "mat converted size ="+ m.size());
+	 Log.i("SERVICE HISTOGRAMS ACTIVITY", "mat converted size ="+ m.size());
 	 
 	 List<Integer> is = new ArrayList<Integer>() ;
 	 Converters.Mat_to_vector_int(m, is) ;
-	 Log.i("SERVICE", "Matrix coveter size ="+is.size());
+	 Log.i("SERVICE HISTOGRAMS ACTIVITY", "Matrix coveter size ="+is.size());
 	 	 
 	 byte[] bytes = null;
 	  ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -131,7 +125,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	    //TODO: Handle the exception
 	  }
 
-	 Log.i("SERVICE", " byte conveter size ="+ bytes.length);
+	 Log.i("SERVICE HISTOGRAMS ACTIVITY", " byte conveter size ="+ bytes.length);
 	
  	 return bytes ;
  	}
@@ -141,7 +135,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 		// load text
 	 	try {
 	 	    	// get input stream for text
-		    	InputStream is = getAssets().open("InfosFolder/"+image);
+		    	InputStream is = getAssets().open(image);
 		    	// check size
 		    	int size = is.available();
 		    	// create buffer for IO
@@ -161,49 +155,44 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	 
  }
  
- 
+ /*
+  * idée utiliser le storage interne pour stocker les images 
+  * 
+  */
  public String loadDataImageFromAsset(String image) 
  {
+	// utiliser storage  
 	 
-	 String _path = Environment.getExternalStorageDirectory() + "/DCIM/Camera/";
+	 String _path = "/data/data/com.rproyart.okassa/app_asset_to_local/";
 
  	// load image
  	try {
+ 			
 	    	// get input stream of image
-	    	InputStream ims = getAssets().open("ImageFolder/"+image);
-	    	Log.i("LOAD DATA FROM ASSETS", "name of image ="+"ImageFolder/"+image);
-	    	// load image as Drawable
-	    	Drawable d = Drawable.createFromStream(ims, null);
+ 		    //FileOutputStream fos;
+ 			InputStream ims = getAssets().open(Path_Image + image) ;
 	    	
-	    	// set image to a ImageView
-	    	ImageView mImage = new ImageView(getBaseContext()) ; 
-	    	
-	    	Log.i("LOAD DATA FROM ASSETS", "new image");
-			mImage.setImageDrawable(d);
+ 			File mydir = getBaseContext().getDir("asset_to_local", Context.MODE_PRIVATE); //Creating an internal dir;
+ 			File fileWithinMyDir = new File(mydir, image); //Getting a file within the dir.
+ 			FileOutputStream out = new FileOutputStream(fileWithinMyDir); //Use the stream as usual to write into the file
 
-	    	int h = mImage.getHeight();
-	    	int w = mImage.getWidth();
+ 			Log.i("LOAD DATA FROM ASSETS", "name of image ="+"ImageFolder/"+image);
 	    	
-	    	Log.i("LOAD DATA FROM ASSETS", "height="+h+"weight"+w);
+	    	Log.i("LOAD DATA FROM ASSETS", "get image byteArray");
+	    	byte[] data = new byte[ims.available()];
 	    	
-	    	BufferedInputStream bufferedInputStream = new BufferedInputStream(ims);
-
-	    	Bitmap bmp = BitmapFactory.decodeStream(bufferedInputStream);
-	    	
-	    	mImage.setImageBitmap(bmp) ;
-	    	
-	    	
-	    	
-	    	Log.i("LOAD DATA FROM ASSETS", "bmp is decoded");
-	    	       	
-            File file = new File(_path + "/"+ "todatabase.jpg");
-            FileOutputStream fos;
-            
+	    	Log.i("LOAD DATA FROM ASSETS", "bmp is decoded");       	 	
+            //File file = new File(_path + "/"+ "todatabase.jpg");
+                    
             try 
             {
-                fos = new FileOutputStream(file);
-               // bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.close();
+                //fos = new FileOutputStream(file);
+                ims.read(data);
+                //fos.write(data);
+                out.write(data);
+                ims.close();
+                out.close() ;
+                //fos.close();
             } 
             catch (FileNotFoundException e) {
                 Log.e("convert image", "FileNotFoundException", e);
@@ -216,7 +205,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
  		
  	}
  	
- 	return _path+"/"+"todatabase.jpg" ;
+ 	return _path+image ;
  }
  
 	
@@ -250,11 +239,21 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
             	    	   // on récupère le chemin de l'image et 
             	    	   // le titre de l'image et on on ajoute 
             	    	   // l'image a la base de données
-            	    	  
+            	    	   
+            	    	   // on récupère le nom de l'image pour avoir son fichier
+            	    	   // d'infos
+            	    	               	    	   
+            	    	   int mid= line.lastIndexOf(".");
+            	    	   String fname=line.substring(0,mid);
+            	    	   String ext ="_file.txt" ;
             	    	    
-            	    	    //PopulateDataBaseImage(img, line);
+            	    	   Log.i("POPULATE DATABASE", "nom image sans extension="+fname);
+            	    	   String infos_file = fname + ext ;
+            	    	   Log.i("POPULATE DATABASE", "nom fichier infos ="+infos_file);
+            	    	    
+            	    	   PopulateDataBaseImage(loadDataImageFromAsset(line), line,Path_infos+infos_file);
             	        } 
-            	      br.close();
+            	           br.close();
             	       }
             	      catch (IOException e) 
             	     { 
@@ -274,18 +273,22 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
  	 * @param image_name
  	 */
  
-public void PopulateDataBaseImage(String image_path, String image_name)
+public void PopulateDataBaseImage(String image_path, String image_name,String infos_Image_Path)
 {
 		  
 		 Log.i("POPULATE DATABASE IMAGE", "loading image");
 		 Mat img = Highgui.imread(image_path) ;
 	   		
-	   		if ( img.empty() == false)
+	   		if ( img.empty() == true)
 	   		{	
 	   			Log.i("POPULATE DATABASE IMAGE", "image is empty");
 	   		}
+	   		else
+	   		{
+	   			Log.i("POPULATE DATABASE IMAGE", "image loaded");
+	   		}
 	   		
-		 Log.i("POPULATE DATABASE IMAGE", "image loaded");
+		 
 		 
 		 Log.i("POPULATE DATABASE IMAGE", "type de la matrice ="+ img.type());
 		
@@ -300,8 +303,8 @@ public void PopulateDataBaseImage(String image_path, String image_name)
 	    RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();                                 
 	            
 	    Log.i("POPULATE DATABASE IMAGE", "creating new image into database ");
-	    String infos_image = null;
-		Image image = new Image(hist,image_name,infos_image);
+	    
+		Image image = new Image(hist,image_name,infos_Image_Path);
 
 	    // create some entries in the onCreate
 	    Log.i("POPULATE DATABASE IMAGE", "inserting the new image");
@@ -424,8 +427,11 @@ public void PopulateDataBaseImage(String image_path, String image_name)
 	   			 Log.i("ACTIVITY START", "launching service");
 	   			 startService(i) ;
 	   			 
-	   			 
-	   			 
+	   			 Intent iBis = new Intent(InfosImage.this, AnswerActivity.class);
+   	   			 Log.i("ACTIVITY START", "starting AnswerActivity");
+   	   			 Log.i("ACTIVITY START", "launching AnswerActivity");
+   	   			 startActivity(iBis);
+	   			  			 
 	             }
 	          });	    
     }
