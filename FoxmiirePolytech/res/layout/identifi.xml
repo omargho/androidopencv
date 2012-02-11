@@ -6,16 +6,20 @@
     android:background="@drawable/plil"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="355dp"
-        android:layout_height="220dp"
-        android:layout_alignParentBottom="true"
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="70dp"
-        android:background="#0106000d"
-        android:text="              Informations sur l&apos;image:"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
+        android:layout_alignParentTop="true"
+        android:text="Retour" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Infos" />
 
 </RelativeLayout>

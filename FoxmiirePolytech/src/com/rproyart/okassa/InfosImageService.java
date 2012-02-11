@@ -11,9 +11,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.util.ByteArrayBuffer;
@@ -28,31 +25,57 @@ import org.opencv.utils.Converters;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseService;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.stmt.PreparedQuery;
-import com.j256.ormlite.stmt.QueryBuilder;
-
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 
 public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	
-	
+	LocalBroadcastManager mLocalBroadcastManager;
 	Messenger messenger; 
 	Message message;
 	final static String MY_ACTION = "MY_ACTION";
 	String initData;	
+	String infos_image = "Pas d'infos sur cette image" ;
 	List<KeyPoint> k = new ArrayList<KeyPoint>() ;
 	List<KeyPoint> sift_2 = new ArrayList<KeyPoint>() ;
 	public Mat img ;	
 	Image image ;
-	int isRunning = 0 ;
+	public boolean flag ;
+	
+	// on a lancé les calculs
+	public static boolean isRunning = true ;
+	static final String ACTION_STARTED = "STARTED";
+	static final String ACTION_UPDATE = "UPDATE";
+	static final String ACTION_STOPPED = "STOPPED";
+
 	
 	
+	/**
+	 * Ce handler est utilisé pour envoyer 
+	 * le nom de l'image trouvée par la 
+	 * comparaison de l'hostogramme, des descripteurs
+	 * ...
+	 * 
+	 * @author olympe kassa
+	 * 
+	 */
 	
+	static final int MSG_UPDATE = 1;
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+              super.handleMessage(msg);
+            
+        }
+    };
 	
 	/**
 	 * Convert a serializable object to byteArray
@@ -110,6 +133,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		 mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
 		 
 	}
 	
@@ -123,7 +147,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 		 
 		 MyThread myThread = new MyThread();
 		 myThread.start();
-  
+		 
 	}
     
 	@Override
@@ -160,7 +184,6 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	
 	public byte[] convertImage(File image_url)
 	{
-		//buffer the download
 		InputStream is = null ;
 		ByteArrayBuffer baf = null ;
 		try {
@@ -228,6 +251,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 				detector.detect(img, keyPoints);	
 				Log.i("DETECTFEATURES inside", "SURF keypoints "+ keyPoints.size());
 			default:
+				// nothing
 				
 		}
 		
@@ -273,6 +297,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 				Log.i("COMPUTEDESCRIPTORS inside"," SURF descriptors size is :"+ descriptors.size());
 				
 			default:
+				// nothing
 				
 		}		
 		 	
@@ -285,7 +310,13 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	}
 	 	 
 	
- 	/* Compute histogramm */ 
+ 	/**
+ 	 * 
+ 	 *  Compute histogramm of an 
+ 	 *  image to compare with others 
+ 	 *  
+ 	 *  @author olympe kassa
+ 	 *  */ 
  	
  public Mat computeHist(Mat img)
  	{
@@ -299,8 +330,10 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 histSize.add(10);
 	 ranges.add(0.0f); ranges.add(256.0f);
 	 Mat hist = new Mat();
+	 Mat mask = new Mat() ;
+	 
 	 Log.i("SERVICE HISTOGRAMS", "computing begin...");
-	 Imgproc.calcHist(images, channels, new Mat(), hist, histSize, ranges);
+	 Imgproc.calcHist(images, channels, mask, hist, histSize, ranges);
 	 Log.i("SERVICE HISTOGRAMS", "histograms size is = " + histSize);
 	 
  	 return hist ;
@@ -319,6 +352,7 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
  public byte[] ConvertMatrix(Mat mat)
  {
 	 Mat m = new Mat() ;
+	 
 	 mat.convertTo(m,CvType.CV_32SC1) ;
 	 Log.i("SERVICE", "mat converted size ="+ m.size());
 	 
@@ -349,124 +383,152 @@ public List<KeyPoint> detectFeatures(Mat img, int choix)
 	 Object test = ByteArrayToObject (byte_array) ;
 	 
 	 List<Integer> is  = (List<Integer>) test ;
-	 Log.i("SERVICE CONVERT VECTOR", "list to convert size ="+ is.size());
-	 Log.i("SERVICE CONVERT VECTOR ", "  element of vector =" + is.toString()) ;
+	// Log.i("SERVICE CONVERT VECTOR", "list to convert size ="+ is.size());
+	// Log.i("SERVICE CONVERT VECTOR ", "  element of vector =" + is.toString()) ;
 	
 	 m = Converters.vector_int_to_Mat(is) ;
 	 
 	 Mat mat = new Mat() ;
 	 m.convertTo(mat, CvType.CV_32F) ;
-	 Log.i("SERVICE CONVERT VECTOR", "Vector coveter size ="+is.size());
+	// Log.i("SERVICE CONVERT VECTOR", "Vector coveter size ="+is.size());
 	 
-	 Log.i("SERVICE CONVERT VECTOR", " Mat coveter size ="+ m.size());
+	 //Log.i("SERVICE CONVERT VECTOR", " Mat coveter size ="+ m.size());
 	 
 	 return mat ;
  }
  
  
  
+@Override
+public void onDestroy() {
+	// TODO Auto-generated method stub
+	super.onDestroy();
+	// Tell any local interested parties about the stop.
+    mLocalBroadcastManager.sendBroadcast(new Intent(ACTION_STOPPED));
+
+    // Stop doing updates.
+    mHandler.removeMessages(MSG_UPDATE);
+}
+
+
+
 public class MyThread extends Thread{
-	
-	private volatile boolean stop = false;
-	
-	public synchronized void requestStop() {
-        stop = true;
-     }
-	
+		
 	@Override
    public void run() {
 		  // TODO Auto-generated method stub	
-		
+	
+		//while(flag == true)
+		{
 			 try{
 					
-				 int cpt =0 ;
-				 Image im_query = new Image() ;
+				 Image im_query = null ;
 					
-				 File f = new File("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
+				// File f = new File("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
+				 File f = new File("/data/data/com.rproyart.okassa/app_pictureDir/picture.jpg") ;
 				 byte[] im = convertImage(f) ;
+				 
+				 if(im.length == 0)
+				 {
+					 Log.i("SERVICE IMAGE CONVERSION", "WTF it's not converted !!!"); 
+				 }
+				 else
+				 {
+					 Log.i("SERVICE IMAGE CONVERSION", "OMG it's converted... it's great !!!"); 
+				 }
 				  
 				 Log.i("SERVICE", "loading image");
-				 img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
+				 
+				 // on récupère l'image prise en photo
+				// img = loadImage("/data/data/com.rproyart.okassa/app_pictureDir/picture.jpg") ;
+				
+				 // on teste une image temporaire
+				  img = loadImage("/data/data/com.rproyart.okassa/app_asset_to_local/4cantons.jpg") ;
+				 
+				 
+				 //img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;
 				 Log.i("SERVICE", "image loaded");
 				 
 				 Log.i("SERVICE", "type de la matrice ="+ img.type());
-				 
-				 
-				 Log.i("SERVICE", "computing histogramms");
-				 Mat hist = computeHist(img) ;
-				 Log.i("SERVICE", "type de la matrice ="+ hist.type());
-				 Log.i("SERVICE", "histogramms");
-				 				 
-				 byte[] test = ConvertMatrix(hist);
-				 
-				// get the dao
-				RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();					
-					
-				Log.i("SERVICE", "creating new histograms");
-				image = new Image(test, "l'image que l'on utilise") ;
-			
-				// create some entries in the onCreate
-				Log.i("SERVICE", "inserting the new image");
-				simpleDao.create(image);
+				 				
+                 Log.i("SERVICE", "computing histogramms");
+                 Mat hist = computeHist(img) ;
+                 Log.i("SERVICE", "type de la matrice ="+ hist.type());
+                 Log.i("SERVICE", "histogramms");
+                                                 
+                 byte[] test = ConvertMatrix(hist);
+//                 byte[] test_sift = ConvertMatrix(sift);
+//                 byte[] test_surf = ConvertMatrix(surf);
+//                 
+                 
+                // get the dao
+                RuntimeExceptionDao<Image, Integer> simpleDao = getHelper().getSimpleDataDao();                                 
+                        
+                // trying to retrieve data
+                Log.i("IMAGE DATABASE ", "we get the data we inserted into the database");
+                                                                
+                List<Image> result = simpleDao.queryForAll() ;
+                
+                
+                if (result.isEmpty() == false)
+                {
+                        Log.i("IMAGE RETRIEVED ", "we retrieved the " +
+                                        "column and his size is =" + result.size() );
+                                                 
+                        
+                        for(Image image : result)
+                        {
+                                Log.i("IMAGE RETRIEVED ", " sift size =" + image.hist.length) ;
+                                Mat m_comp = ConvertVector(image.hist) ;
+                                Log.i("IMAGE RETRIEVED ", " native object =" + m_comp.nativeObj);
+                                
+                                // compare their histograms using the Bhattacharyya coefficient
+                                
+                                // 0.2 = good similarity
+                                // d=0.0 = perfect similarity
+                                double resu = Imgproc.compareHist(ConvertVector(test),
+                                                m_comp , Imgproc.CV_COMP_BHATTACHARYYA);         
+                                
+                                if(resu < 0.1)
+                                {
+                                	im_query = image ;
+                                }
+                                
+                                Log.i("IMAGE RETRIEVED ", " distance between picture " +
+                                		"histogram and "+ image.nom +" histogram equals" + resu);
+                        }
+                        
+                        // on affiche l'image trouvée et on envoie son nom
+                        //  à l'activité de reponse
+                        
+                        
+                    
+                        Log.i("IMAGE RETRIEVED ", " using histogramms the " +
+                                        "nearest image is =" + im_query.toString());
+                        
+                        
+                      // sending data of the query image
+       	   			  Intent iBis = new Intent(ACTION_UPDATE);
+                      iBis.putExtra("image_name", im_query.nom);
+                      iBis.putExtra("image_infos", im_query.infos);
+                      Log.i("IMAGE RETRIEVED ", " image_name = " + im_query.nom +
+                                "image location is =" + im_query.infos);
+                      mLocalBroadcastManager.sendBroadcast(iBis);
+                       
+                }
+                
+               // flag = false ;
+                 this.interrupt() ;
+                 stopSelf() ;
 
-				// trying to retrieve data
-				Log.i("IMAGE DATABASE ", "we get the data we inserted into the database");
-					
-			 	// query for all sift elements in the database
-				QueryBuilder<Image, Integer> q = simpleDao.queryBuilder().selectColumns("hist") ;
-				// prepare our sql statement
-				PreparedQuery<Image> preparedQuery = q.prepare();
-				
-				List<Image> result = simpleDao.query(preparedQuery);	
-								
-				if (result.isEmpty() == false)
-				{
-					Log.i("IMAGE RETRIEVED ", "we retrieved the " +
-							"column and his size is =" + result.size() );
-					
-					double max = Imgproc.compareHist(ConvertVector(test),
-							ConvertVector( image.hist) , Imgproc.CV_COMP_BHATTACHARYYA);
-					
-					for(Image image : result)
-					{
-						Log.i("IMAGE RETRIEVED ", " sift size =" + image.hist.length) ;
-						Mat m_comp = ConvertVector( image.hist) ;
-						Log.i("IMAGE RETRIEVED ", " native object =" + m_comp.nativeObj);
-						
-						// compare their histograms using the Bhattacharyya coefficient
-						// 0 = very low similarity
-						// 0.9 = good similarity
-						// 1 = perfect similarity
-	
-						double resu = Imgproc.compareHist(ConvertVector(test),
-								m_comp , Imgproc.CV_COMP_BHATTACHARYYA);	 
-						
-						if(resu > max)
-						{
-							max = resu ;
-							im_query = image ;
-						}
-						
-						Log.i("IMAGE RETRIEVED ", " hist comp =" + resu);
-					}
-											
-					Log.i("IMAGE RETRIEVED ", " using histogramms the " +
-							"nearest image is =" + im_query.toString());
-					
-				//im_query.id
-					
-				}
-				
-				 this.interrupt() ;
-				 stopSelf() ;
-				  //appel de la base de donn�es et au kNN
+				  //appel de la base de données et au kNN
 				 }
 				 catch(Exception e)
 				 {
 					// TODO Auto-generated catch block
 					    e.printStackTrace();
 				 }     
-		}	 
-	}
-
+		  }	 
+	  }  
+   }
 }
