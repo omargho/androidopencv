@@ -126,7 +126,7 @@ public abstract class InfosImageViewBase extends SurfaceView implements SurfaceH
 	            	 * SD au manifest.xml
 	            	 */
 	            	
-	                if(InfosImage.click == true)
+	                if(InfosImageCamera.click == true)
 	                {
 	                	Canvas canvas = new Canvas(bmp);
 	                	canvas.drawBitmap(bmp,w,h, null) ;
@@ -157,7 +157,7 @@ public abstract class InfosImageViewBase extends SurfaceView implements SurfaceH
 	                        out.close() ;
 	                        fos.close();
 	                        
-	                        InfosImage.click = false ;
+	                        InfosImageCamera.click = false ;
 	                    } catch (FileNotFoundException e) {
 	                        Log.e("Panel", "FileNotFoundException", e);
 	                    } catch (IOException e) {

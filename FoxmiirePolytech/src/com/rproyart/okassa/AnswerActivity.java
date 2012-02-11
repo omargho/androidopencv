@@ -109,7 +109,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				 Intent i= new Intent(AnswerActivity.this, InfosImage.class);
+				 Intent i= new Intent(AnswerActivity.this, InfosImageAcceuil.class);
 	   			 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "starting service");
 	   			 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "launching service");
 	   			 startActivity(i) ;
