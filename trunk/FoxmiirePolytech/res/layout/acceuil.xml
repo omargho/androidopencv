@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+ 	    android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
         android:layout_alignParentLeft="true" />
 
     <TextView
@@ -19,8 +19,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="82dp"
-        android:text="Olympe Kassa et Romain Proyart
-            IMA5-SC 2012"
+        android:text="Olympe Kassa et Romain Proyart 
+         IMA5-SC 2012"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black" />
 
