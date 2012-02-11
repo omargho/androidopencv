@@ -1,49 +1,46 @@
 package com.rproyart.okassa;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
-import android.graphics.PixelFormat;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Window;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
 
-public class acceuil extends Activity {
+public class acceuil extends Activity implements OnTouchListener {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		
-	 	super.onCreate(savedInstanceState);
-        Log.i("SEND INFOS ACTIVITY CREATE", "super oncreate");
-        
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Log.i("SEND INFOS ACTIVITY CREATE", "getting all surfaceholder");
-        
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        Log.i("SEND INFOS ACTIVITY CREATE", "frame orienation");
-
-        /*Original Contentview*/
-        Log.i("INFOS ACTIVITY CREATE", "we had the contentView");
-   
-        // vue d'affichage
-        setContentView(R.layout.acceuil);
-        
-        getWindow().setFormat(PixelFormat.UNKNOWN);
-       
-        /**
-         * Start activity of database
-         */
-		 
-		 Log.i("ACTIVITY CREATE", "BROADCAST TYPE DATABASE");
-		 
-	}
-
-	@Override
-	protected void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-	}
 	
+	Button button;
+	
+	@Override
+
+	public void onCreate(Bundle savedInstanceState){
+
+	      super.onCreate(savedInstanceState);
+
+	      button.setOnTouchListener(this);
+	      
+	      View v = findViewById(R.id.RelativeLayout1) ;
+
+	      v.setOnTouchListener(this);
+	      
+	      setContentView(v);
+
+	}
+
+	 
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// TODO Auto-generated method stub
+
+	            Intent myIntent = new Intent(v.getContext(), InfosImage.class);
+
+	            startActivity(myIntent);
+
+		return false;
+	}
+
 
 }

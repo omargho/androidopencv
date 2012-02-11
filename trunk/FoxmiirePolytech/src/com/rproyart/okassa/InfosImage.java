@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,7 +66,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	public static Mat img;
 	public ProgressDialog mProgressDialog;
 	public static boolean click ;
-	public static boolean store ;
+	public static boolean enable ;
 	InfosImageView view ;
 	SurfaceView v1  ;
 	SurfaceView v2 ;
@@ -76,6 +77,13 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	String Path_Image = "ImageFolder/" ;
 	String Path_infos = "InfosFolder/";
 	
+	
+	 LocalBroadcastManager mLocalBroadcastManager;
+     BroadcastReceiver mReceiver;
+	
+     
+     static final String ACTION_BUTTON = "BUTTON ENABLE";
+     
  	/**
  	 * 
  	 *  Compute histogramm of an 
@@ -218,7 +226,7 @@ public class InfosImage extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @param image_path
 	 * @author olympe kassa
 	 */
- 	public void PopulateDataBase()
+ public void PopulateDataBase()
  	{
  		Log.i("POPULATE DATABASE", "loading images into database");
             	// lecture du fichier des titres des images
@@ -330,17 +338,54 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
         
         
         click = false ;
-        store = false ;
+        
         /*Original Contentview*/
         Log.i("INFOS ACTIVITY CREATE", "we had the contentView");
         view = new InfosImageView(this) ;
         // vue d'acceuil
-        //setContentView(R.layout.acceuil);
-        setContentView(view);
-
         
+        //setContentView(R.layout.acceuil);
+        
+        
+        setContentView(view);
         getWindow().setFormat(PixelFormat.UNKNOWN);
        
+        
+        // Receuver of answer activity
+        
+        // We use this to send broadcasts within our local process.
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this) ;
+
+        // We are going to watch for interesting local broadcasts.
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_BUTTON);
+        
+        
+        mReceiver = new BroadcastReceiver() {
+
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                                // TODO Auto-generated method stub
+                                  if (intent.getAction().equals(ACTION_BUTTON))
+                                  {
+                                          /*
+                                           * On dessine l'image que l'on a trouvé
+                                           */
+                                	  String orgData = intent.getStringExtra("button_enable");
+                                	  if(orgData.equals("false"))
+                                	  {
+                                		  enable = false ;
+                                	  }
+                                	  
+                            		     Log.i("MyReceiver from infosImage", orgData);     
+                                                           
+                                    } 
+                        }
+        };
+        mLocalBroadcastManager.registerReceiver(mReceiver, filter);
+        
+        
+        
         
         Log.i("ACTIVITY CREATE", "reglage de l'image");
         controlInflater = LayoutInflater.from(getBaseContext());
@@ -354,45 +399,7 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 		
     }
     
-      
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i("MenuOptions", "onCreateOptionsMenu");
-        mItemAddPicture = menu.add("Ajouter image");
-        mItemAddPicture.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			public boolean onMenuItemClick(MenuItem item) {
-				store = true ;
-				
-				return true;
-			}
-		});
-        TakeAPicture = menu.add("Prendre image") ;
-        return true;
-    }
-    
-	
-   /**
-    * cette methode permet de gerer les
-    * boutons options
-    * 
-    */
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i("Menu options", "Menu Item selected " + item);
-        if (item == mItemAddPicture)
-        {
-        	store = true ;
-        }
-        
-        if (item == TakeAPicture)
-        {
-        	
-        }
-        
-		return false;
-    }
-    
+   
     
     @Override
 	protected void onStart() {
@@ -409,8 +416,11 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 	    
 	    Log.i("ACTIVITY START", "we register to receiver");
 	    registerReceiver(myReceiver, intentFilter);
-	    	      
-	    ((Button)findViewById(R.id.mbuttonAnalyse)).setOnClickListener(new View.OnClickListener(){
+	    	 
+	    // var for button : enable or disable
+	    enable = true ;
+	    Button bt = (Button)findViewById(R.id.mbuttonAnalyse) ;
+	    (bt).setOnClickListener(new View.OnClickListener(){
 	      
 	   		@Override
 	        public void onClick(View v) {
@@ -427,13 +437,30 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 	   			 Log.i("ACTIVITY START", "launching service");
 	   			 startService(i) ;
 	   			 
+	   			 // on desactive le bouton
+	   			 
 	   			 Intent iBis = new Intent(InfosImage.this, AnswerActivity.class);
    	   			 Log.i("ACTIVITY START", "starting AnswerActivity");
    	   			 Log.i("ACTIVITY START", "launching AnswerActivity");
    	   			 startActivity(iBis);
 	   			  			 
-	             }
-	          });	    
+	             } 
+	          });
+	    
+	    // si le button est activé et cliqué 
+	    // alors on le desactive
+	    
+	    if((enable == true) && (click == true))
+	    {
+	    	// disable click click event
+	    	bt.setClickable(false) ;
+	    }
+	    
+	    if(enable == false)
+	    {
+	    	// enable click event
+	    	bt.setClickable(true) ;
+	    }
     }
 
 
@@ -449,8 +476,10 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
     	 
     	 @Override
     	 public void onReceive(Context arg0, Intent arg1) {
-    	  // TODO Auto-generated method stub
-    		     		 
+    		 
+    		 
+    	  // TODO Auto-generated method stub    		 
+    		 
     		 if(arg1.hasExtra("DETECTFEATURES")){
     			 String orgData = arg1.getStringExtra("DETECTFEATURES");
        		     Log.i("MyReceiver", orgData);
