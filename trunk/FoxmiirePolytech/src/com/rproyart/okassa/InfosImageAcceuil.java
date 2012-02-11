@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.View.OnTouchListener;
 
 
 
@@ -52,9 +51,10 @@ public class InfosImageAcceuil extends Activity {
 				Intent myIntent = new Intent(InfosImageAcceuil.this, 
 						InfosImageCamera.class);
 				
-				 Log.i("ACCEUIL ACTIVITY CREATE", "start the activity");
+				Log.i("ACCEUIL ACTIVITY CREATE", "start the activity camera");
 		        startActivity(myIntent);
-				
+		        
+		        			
 				// TODO Auto-generated method stub
 				return true;
 			}
