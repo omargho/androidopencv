@@ -54,6 +54,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
 	static final String ACTION_UPDATE = "UPDATE";
 	static final String ACTION_STOPPED = "STOPPED";
 
+	static final String ACTION_NOT_FOUND = "NOT_FOUND";
 	
 	
 	/**
@@ -430,20 +431,20 @@ public class MyThread extends Thread{
 				 
 				 if(im.length == 0)
 				 {
-					 Log.i("SERVICE IMAGE CONVERSION", "WTF it's not converted !!!"); 
+					 Log.i("SERVICE IMAGE CONVERSION", "it's not converted !!!"); 
 				 }
 				 else
 				 {
-					 Log.i("SERVICE IMAGE CONVERSION", "OMG it's converted... it's great !!!"); 
+					 Log.i("SERVICE IMAGE CONVERSION", "it's converted... it's great !!!"); 
 				 }
 				  
 				 Log.i("SERVICE", "loading image");
 				 
 				 // on récupère l'image prise en photo
-				// img = loadImage("/data/data/com.rproyart.okassa/app_pictureDir/picture.jpg") ;
+				  img = loadImage("/data/data/com.rproyart.okassa/app_pictureDir/picture.jpg") ;
 				
 				 // on teste une image temporaire
-				  img = loadImage("/data/data/com.rproyart.okassa/app_asset_to_local/4cantons.jpg") ;
+				 // img = loadImage("/data/data/com.rproyart.okassa/app_asset_to_local/4cantons.jpg") ;
 				 
 				 
 				 //img = loadImage("/mnt/sdcard/DCIM/Camera/picture.jpg") ;

@@ -52,6 +52,8 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
          static final String ACTION_UPDATE = "UPDATE";
          static final String ACTION_STOPPED = "STOPPED";
          static final String ACTION_BUTTON = "BUTTON ENABLE";
+         static final String ACTION_NOT_FOUND = "NOT_FOUND";
+         
          private static final int ALERT_DIALOG = 1;
          String text_to_show ;
          
@@ -132,7 +134,13 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                           
                                           drawPic(Path + intent.getStringExtra("image_name"),
                                                           intent.getStringExtra("image_infos")) ;                 
-                                    } 
+                                    }
+                                  
+                                  if (intent.getAction().equals(ACTION_NOT_FOUND))
+                                  {
+                                	  
+                                  }
+                                	  
                         }
         };
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
@@ -168,21 +176,22 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
          */
         if(imgFile.exists())
         {
-                Log.i("DRAW PICTURE", "get the layout...");
-                View mlayout = findViewById(R.id.RelativeLayout1);
+            Log.i("DRAW PICTURE", "get the layout...");
+            View mlayout = findViewById(R.id.RelativeLayout1);
 
-                Log.i("DRAW PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
+            Log.i("DRAW PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             Log.i("DRAW PICTURE", "bmp size is ="+myBitmap.getWidth()+"*"+myBitmap.getHeight());
             
             Log.i("DRAW PICTURE", "get drawable...");
-                Drawable d =new BitmapDrawable(myBitmap);
-                Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
-                mlayout.setBackgroundDrawable(d) ;
+            Drawable d =new BitmapDrawable(myBitmap);
+            Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
+            mlayout.setBackgroundDrawable(d) ;
                
         }
         else
         {
+        		// afficher image not found
                 Log.i("DRAW PICTURE", "file doesn't exist...");
                 
         }
@@ -222,8 +231,18 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                         // on affiche les infos contenues dans 
                         // le fichier d'infos de l'image
                                 
-                        text_to_show = strBuild.toString() ;
-                        showDialog( ALERT_DIALOG );
+                        if(strBuild.toString() == null)
+                        {
+                        	text_to_show = "pas d'informations sur " +
+                        			"sur cette image" ;
+                            showDialog( ALERT_DIALOG );
+                        }
+                        else
+                        {
+                        	text_to_show = strBuild.toString() ;
+                            showDialog( ALERT_DIALOG );
+                        }
+                        
                         Log.i("DRAW PICTURE", "infos to show to UI ="+strBuild);        
                         //textView.setText(strBuild) ;
                         

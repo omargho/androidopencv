@@ -26,14 +26,10 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
@@ -43,29 +39,56 @@ import android.widget.ProgressBar;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+/**
+ * Cette classe permet d'effectuer l'ouverture de la camera
+ * pour effectuer la capture de l'image. Mais aussi le peuplement
+ * de la base de données avec les images stockées dans le 
+ * fichier assets. 
+ * 
+ * 
+ * 
+ * @author olympe kassa  & romain proyart
+ *
+ */
+
+
 
 public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
 	
-	String MAIN  ;
+		
+	// this var is  used to control the view in a viewgroup
 	LayoutInflater controlInflater = null;
-	Message message ;
-	MyReceiver myReceiver;
-	public static Mat img;
-	public ProgressDialog mProgressDialog;
-	public static boolean click ;
-	public static boolean enable ;
-	InfosImageView view ;
-	SurfaceView v1  ;
-	SurfaceView v2 ;
 	
-    private MenuItem            mItemAddPicture;
-    private MenuItem            TakeAPicture;
-	String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+	// the receiver we us for listening messages from
+	//other activities or services
+	MyReceiver myReceiver;
+	
+	// this var is  used to store the main image in OpenCV format
+	public static Mat img;
+	
+	// the progress dialog is used to show to 
+	// the user that computation is performing
+	public ProgressDialog mProgressDialog;
+	
+	// var used to catch the picture
+	public static boolean click ;
+	
+	// var used to enable the analyse button
+	public static boolean enable ;
+	
+	// path of images we stored in the database	
 	String Path_Image = "ImageFolder/" ;
+	
+	// path of file used to describe images
 	String Path_infos = "InfosFolder/";
 	
 	
+    // we use a local broadcast receiver to manage 
+	// messages inside the application
 	 LocalBroadcastManager mLocalBroadcastManager;
+	 
+	// we use a local broadcast receiver to catch only 
+	// messages inside the application
      BroadcastReceiver mReceiver;
 	
      
@@ -139,7 +162,7 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
 		    	is.read(buffer);
 		    	// close stream
 		    	is.close();
-		    	// set result to TextView
+		    	
 		    	 Log.i("POPULATE IMAGE DATABASE", "reading file for images titles");	
 	 	}
 	 	catch (IOException ex) {
@@ -164,7 +187,7 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
  	try {
  			
 	    	// get input stream of image
- 		    //FileOutputStream fos;
+ 		    
  			InputStream ims = getAssets().open(Path_Image + image) ;
 	    	
  			File mydir = getBaseContext().getDir("asset_to_local", Context.MODE_PRIVATE); //Creating an internal dir;
@@ -177,17 +200,14 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
 	    	byte[] data = new byte[ims.available()];
 	    	
 	    	Log.i("LOAD DATA FROM ASSETS", "bmp is decoded");       	 	
-            //File file = new File(_path + "/"+ "todatabase.jpg");
+            
                     
             try 
             {
-                //fos = new FileOutputStream(file);
                 ims.read(data);
-                //fos.write(data);
                 out.write(data);
                 ims.close();
-                out.close() ;
-                //fos.close();
+                out.close() ;    
             } 
             catch (FileNotFoundException e) {
                 Log.e("convert image", "FileNotFoundException", e);
@@ -213,6 +233,7 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
 	 * @param image_path
 	 * @author olympe kassa
 	 */
+ 
  public void PopulateDataBase()
  	{
  		Log.i("POPULATE DATABASE", "loading images into database");
@@ -231,6 +252,7 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
             	       while((line = br.readLine()) != null) 
             	       {
             	    	   Log.i("POPULATE DATABASE", "nom image="+line);
+            	    	   
             	    	   // on récupère le chemin de l'image et 
             	    	   // le titre de l'image et on on ajoute 
             	    	   // l'image a la base de données
@@ -254,9 +276,7 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
             	     { 
             	        e.printStackTrace(); 
             	     }
-            	
-                // on recupere l'lélément que l'on charge en db 
-            	
+            	               
  	}
  	
  	/**
@@ -299,6 +319,7 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 	            
 	    Log.i("POPULATE DATABASE IMAGE", "creating new image into database ");
 	    
+	    // add the current image to the database
 		Image image = new Image(hist,image_name,infos_Image_Path);
 
 	    // create some entries in the onCreate
@@ -306,8 +327,6 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 	    simpleDao.create(image);
 
 }
-	
-	
 	
   	/** Called when the activity is first created. */
     @Override
@@ -366,8 +385,7 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
         
         
-        
-        
+     
         Log.i("ACTIVITY CREATE", "reglage de l'image");
         controlInflater = LayoutInflater.from(getBaseContext());
         View viewControl = controlInflater.inflate(R.layout.control, null);
@@ -390,7 +408,7 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
     	super.onStart();
 		
     	Log.i("ACTIVITY START", "receiver set up");
-		   myReceiver = new MyReceiver();
+		myReceiver = new MyReceiver();
 		   
 		Log.i("ACTIVITY START", "set up filter of intents");
 	    IntentFilter intentFilter = new IntentFilter();
@@ -429,6 +447,9 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
 	   			  			 
 	             } 
 	          });
+	    
+	    Log.i("ACCEUIL ACTIVITY CREATE", "finish the activity camera");
+	    
 	    
 	    // si le button est activé et cliqué 
 	    // alors on le desactive

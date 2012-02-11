@@ -19,32 +19,32 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="82dp"
-        android:text="Olympe Kassa et Romain Proyart 
-         IMA5-SC 2012"
+        android:text="Olympe Kassa et Romain Proyart IMA5-SC 2012"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="fill_parent"
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
-        android:layout_marginTop="14dp"
-        android:gravity="center"
-        android:text="Bienvenue sur l&apos;application de reconnaissance d&apos;oeuvres d&apos;art"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/black" />
+        android:layout_above="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="48dp"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/black"
+        android:text="Bienvenue sur l'application de reconnaissance d'oeuvre d'art"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
+        android:layout_above="@+id/textView1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:text="Touchez l'écran pour lancer l'application"
+        android:layout_marginBottom="14dp"
+        android:gravity="center_horizontal"
+        android:text="Touchez l&apos;écran pour lancer l&apos;application"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black" />
+        android:textColor="#ff0000" />
 
 </RelativeLayout>
