@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+<item android:id="@+id/add" 
+      android:title="Add image"
+      android:icon="@drawable/ic_menu_add"/>
+
+
+<item android:id="@+id/remove" 
+      android:title="Remove image"
+      android:icon="@drawable/ic_menu_cancel"/>
+
+    
+<item android:id="@+id/database" 
+      android:title="Manage database"
+      android:icon="@drawable/ic_menu_database">
+  
+  <menu android:id="@+id/Manage_database">
+	
+      <item android:id="@+id/reset"
+	       android:title="Reset"   />	
+ 
+	 <item android:id="@+id/delete"
+	       android:title="Delete"  />
+     </menu>
+</item>
+    
+<item android:id="@+id/quitter" 
+     android:title="Quit"
+     android:icon="@drawable/ic_menu_exit" />
+</menu>
+	
