@@ -28,13 +28,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import android.support.v4.content.LocalBroadcastManager;
 
 /**
  * Cette classe permet de gerer l'affichage de 
  * l'image que l'on a trouvé en utilisant la 
- * comparaison d'hisrtogrammes
+ * comparaison des descripteurs
  * 
  * @author olympe kassa & romain proyart 
  * 
@@ -52,10 +53,17 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
          static final String ACTION_UPDATE = "UPDATE";
          static final String ACTION_STOPPED = "STOPPED";
          static final String ACTION_BUTTON = "BUTTON ENABLE";
-         static final String ACTION_NOT_FOUND = "NOT_FOUND";
          
          private static final int ALERT_DIALOG = 1;
-         String text_to_show ;
+         private static final int CHOOSE_IMAGE_ID = 0 ;
+         
+        String text_to_show ;
+		private String i_1;
+		private String i_2;
+		private String i_3;
+		
+		int pic_ch ;
+		Drawable d ;
          
         /** Called when the activity is first created. */
     @Override
@@ -92,33 +100,33 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         // aficher les infos a la demande
         
         ((Button) findViewById( R.id.button1 ) )
-		.setOnClickListener( new OnClickListener()
-		{
+                .setOnClickListener( new OnClickListener()
+                {
 
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				showDialog( ALERT_DIALOG );
-			}
+                        public void onClick(View v) {
+                                // TODO Auto-generated method stub
+                                showDialog( ALERT_DIALOG );
+                        }
 
-		}
-	    );
+                }
+            );
         
         // retour vers l'activité de base
         
         ((Button) findViewById( R.id.button2 ) )
-		.setOnClickListener( new OnClickListener()
-		{
+                .setOnClickListener( new OnClickListener()
+                {
 
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				 Intent i= new Intent(AnswerActivity.this, InfosImageAcceuil.class);
-	   			 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "starting service");
-	   			 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "launching service");
-	   			 startActivity(i) ;
-			}
+                        public void onClick(View v) {
+                                // TODO Auto-generated method stub
+                                 Intent i= new Intent(AnswerActivity.this, InfosImageAcceuil.class);
+                                 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "starting service");
+                                 Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "launching service");
+                                 startActivity(i) ;
+                        }
 
-		}
-	    );
+                }
+            );
         
         
         mReceiver = new BroadcastReceiver() {
@@ -131,16 +139,45 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                           /*
                                            * On dessine l'image que l'on a trouvé
                                            */
+                                          i_1 = intent.getStringExtra("image_first_name") ;
+                                          String i_1_infos = intent.getStringExtra("image_first_infos") ;
+                                          Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 1 = "+ i_1 +
+                                        		  "image 1 infos ="+ i_1_infos);
+                                        
+                                          i_2 = intent.getStringExtra("image_second_name") ;
+                                          String i_2_infos = intent.getStringExtra("image_second_infos") ;
+                                          Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 2 = "+ i_2 +
+                                        		  "image 2 infos =" + i_2_infos);
+                                        
+                                          i_3 = intent.getStringExtra("image_third_name") ;
+                                          String i_3_infos = intent.getStringExtra("image_third_infos") ;
+                                          Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 3 = "+ i_3 +
+                                        		  "image 3 infos = " +  i_3_infos);
                                           
-                                          drawPic(Path + intent.getStringExtra("image_name"),
-                                                          intent.getStringExtra("image_infos")) ;                 
-                                    }
-                                  
-                                  if (intent.getAction().equals(ACTION_NOT_FOUND))
-                                  {
-                                	  
-                                  }
-                                	  
+                                          showDialog(CHOOSE_IMAGE_ID);
+                                          
+                                          switch(pic_ch)
+                                          {
+                                          
+                                          case 0:
+                                        	  drawPic(Path + i_1,i_1_infos) ;
+                                        	  break ;
+                                        	//  showDialog( ALERT_DIALOG );
+                                          case 1:
+                                        	  drawPic(Path + i_2,i_2_infos) ;
+                                        	  break ;
+                                        	  //  showDialog( ALERT_DIALOG );
+                                          case 3:
+                                        	  drawPic( Path + i_3,i_3_infos) ;
+                                        	  break ;
+                                        	//  showDialog( ALERT_DIALOG );
+                                          default:
+                                        	  
+                                        	  // afficher image not found
+                                          }
+                                          
+//                                                           
+                                    } 
                         }
         };
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
@@ -177,21 +214,20 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         if(imgFile.exists())
         {
             Log.i("DRAW PICTURE", "get the layout...");
-            View mlayout = findViewById(R.id.RelativeLayout1);
+             //   View mlayout = findViewById(R.id.RelativeLayout1);
 
             Log.i("DRAW PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             Log.i("DRAW PICTURE", "bmp size is ="+myBitmap.getWidth()+"*"+myBitmap.getHeight());
             
             Log.i("DRAW PICTURE", "get drawable...");
-            Drawable d =new BitmapDrawable(myBitmap);
-            Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
-            mlayout.setBackgroundDrawable(d) ;
+                d =new BitmapDrawable(myBitmap);
+                Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
+           //     mlayout.setBackgroundDrawable(d) ;
                
         }
         else
         {
-        		// afficher image not found
                 Log.i("DRAW PICTURE", "file doesn't exist...");
                 
         }
@@ -231,23 +267,13 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                         // on affiche les infos contenues dans 
                         // le fichier d'infos de l'image
                                 
-                        if(strBuild.toString() == null)
-                        {
-                        	text_to_show = "pas d'informations sur " +
-                        			"sur cette image" ;
-                            showDialog( ALERT_DIALOG );
-                        }
-                        else
-                        {
-                        	text_to_show = strBuild.toString() ;
-                            showDialog( ALERT_DIALOG );
-                        }
+                        text_to_show = strBuild.toString() ;
                         
                         Log.i("DRAW PICTURE", "infos to show to UI ="+strBuild);        
                         //textView.setText(strBuild) ;
                         
                         // sending data to enable button clickable
-         	   			Intent iBis = new Intent(ACTION_BUTTON);
+                        Intent iBis = new Intent(ACTION_BUTTON);
                         iBis.putExtra("button_enable", "false");
                         Log.i("ANSWER BUTTON ", "true enable button");
                         mLocalBroadcastManager.sendBroadcast(iBis);
@@ -266,49 +292,79 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     
     
     @Override
-	protected Dialog onCreateDialog(int id) {
-		// TODO Auto-generated method stub
-		String text =  text_to_show;
-		
-		Dialog dialog = null;
-		if ( id == ALERT_DIALOG )
-		{
-			ContextThemeWrapper ctw = new ContextThemeWrapper( this, R.style.MyTheme );
-			AlertDialog.Builder builder= new AlertDialog.Builder( ctw );
-			builder.setMessage(text)
-			    .setTitle( "Informations sur l'image" )
-				.setCancelable( false )
-				.setPositiveButton( "Close",
-						new DialogInterface.OnClickListener()
-						{
+        protected Dialog onCreateDialog(int id) {
+                // TODO Auto-generated method stub
+                String text =  text_to_show;
+                String img1 = i_1;
+                String img2 = i_2;
+                String img3 = i_3;
+                Dialog dialog = null;
+                
+                switch(id) 
+                {
+                case CHOOSE_IMAGE_ID:
+                    // do the work to define the choose Dialog
+                	final CharSequence[] items = {img1, img2, img3};
 
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// TODO Auto-generated method stub
-								dialog.dismiss();
-							}
-							
-						} 
-			);
-			dialog = builder.create();
-		}
-		if ( dialog == null )
-		{
-			dialog = super.onCreateDialog( id );
-		}
-		return dialog;
-	}
+                	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                	builder.setTitle("choose the closest image");
+                	builder.setItems(items, new DialogInterface.OnClickListener() {
+                	    public void onClick(DialogInterface dialog, int item) {
+                	        Toast.makeText(getApplicationContext(), items[item], 
+                	        		Toast.LENGTH_SHORT).show();
+                	        //we choose one in all the above
+                	         
+                	        pic_ch = item ;
+                	        
+                	        Log.i("DRAW PICTURE", "item position ="+pic_ch);
+                	        View mlayout = findViewById(R.id.RelativeLayout1);
+                	        mlayout.setBackgroundDrawable(d) ;
+                	        
+                	    }
+                	});
+                	builder.create().show();
+                    
+                case ALERT_DIALOG:
+                    // do the work to define the alert Dialog
+                	ContextThemeWrapper ctw = new ContextThemeWrapper( this, R.style.MyTheme );
+                    AlertDialog.Builder builder1= new AlertDialog.Builder( ctw );
+                    builder1.setMessage(text)
+                        .setTitle( "Informations sur l'image" )
+                            .setCancelable( false )
+                            .setPositiveButton( "Close",
+                                            new DialogInterface.OnClickListener()
+                                            {
+
+                                                    public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                            // TODO Auto-generated method stub
+                                                            dialog.dismiss();
+                                                    }
+                                                    
+                                            } 
+                    );
+                    
+                    	dialog = builder1.create();
+                    	dialog.show() ;
+                    
+                    
+                default:
+                	dialog = super.onCreateDialog( id );
+                }
+                
+                return dialog;
+        }
 
 
-	@Override
+        @Override
         protected void onStart() {
                 // TODO Auto-generated method stub
                 super.onStart();
                 
                  //drawing the bmp on the ImageView
-        Log.i("INFOS ACTIVITY CREATE", "retrieve the good image");
+            Log.i("INFOS ACTIVITY CREATE", "retrieve the good image");
 
-        Log.i("ACTIVITY START", "set up filter of intents");
+            Log.i("ACTIVITY START", "set up filter of intents");
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(InfosImageService.ACTION_UPDATE);
             
@@ -323,9 +379,4 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         super.onDestroy();
         mLocalBroadcastManager.unregisterReceiver(mReceiver);
     }
-    
-    
-    
-    
-
 }

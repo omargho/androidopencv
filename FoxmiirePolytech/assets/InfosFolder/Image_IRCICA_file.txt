@@ -1,7 +1,0 @@
-Auteur:Google
-Nom:Image_IRCICA
-Largeur:480 pixels
-Hauteur:360 pixels
-Type:image JPEG
-Taille:26,7 Kio
-Descriptions:Centre de recherche en informatique sise à villeneuve d'ascq

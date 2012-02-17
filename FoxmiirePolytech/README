@@ -1,0 +1,31 @@
+=============================================README========================================
+
+
+							Réalisé par Olympe Kassa & Romain Proyart
+								  IMA5SC-Polytech'lille 2012
+
+/*****************************Installation et bibliothèques utiles ****************************
+
+ 1) OpenCV : 
+ 			Télécharger la librairie OpenCV_2.3.1 et l'ajouter au projet sinon vous ne pourrez
+ 			pas utiliser la bibliotheque OpenCV. Elle permet d'effectuer du traitement d'image
+ 			: calcul d'histogrammes, de descripteurs, la détection des points d'interets, des 
+ 			viages... Pour apprendre a l'utiliser nous vous conseillons les livres et sites suivant:
+ 			Learning OpenCV  [Livre]  publié chez Oreilly
+ 			OpenCV 2 Computer Vision Application Programming Cookbook [Livre]
+ 			
+ 			
+ 2) Ormlite : 
+ 			Il s'agit de la bibliotheque qui nous permet de gerer la couche persistence de notre 
+ 			application elle est basée sur les EJB du J2EE et nous fourni une certaine abstraction 
+ 			dans le management de notre base de donnée via un DAO ( Data Object Access).
+ 			Pour plus d'infomations nous vous conseillons le site suivant 
+ 
+  /*************************************** Android **********************************************
+  
+  Pour ce faire la main en android, nous vous conseillons un tres bon ouvrage qui nous servi a comprendre
+  l'architecture de l'os mais aussi comment dans une application faire interagir diverses activités,
+  des vues, charger des images en bdd, mais aussi l'envoi des messages via un localbroadcast manager en lieu 
+  et place d'un broadcast manager qui envoie un message à toutes les applications installées sur
+  le téléphone ce qui rend plus lent le temps de traitement tandis que le traitement via le localbroadcastmanager
+  permet de limiter l'envoi des messages 

@@ -1,7 +1,0 @@
-Auteur:Google
-Nom:polytech-Lille.jpg
-Largeur:310 pixels
-Hauteur:187 pixels
-Type:image JPEG
-Taille:18,3 Kio
-Descriptions:Notre belle école d'ingénieur sise à villeneuve d'ascq
