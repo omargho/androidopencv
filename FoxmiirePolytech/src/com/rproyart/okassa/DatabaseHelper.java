@@ -12,7 +12,8 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 /**
- * Database helper class used to manage the creation and upgrading of your database. This class also usually provides
+ * Database helper class used to manage the creation 
+ * and upgrading of your database. This class also usually provides
  * the DAOs used by the other classes.
  */
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -32,7 +33,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * This is called when the database is first created. Usually you should call createTable statements here to create
+	 * This is called when the database is first created. 
+	 * Usually you should call createTable statements here to create
 	 * the tables that will store your data.
 	 */
 	@Override
@@ -51,7 +53,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * This is called when your application is upgraded and it has a higher version number. This allows you to adjust
+	 * This is called when your application is upgraded and 
+	 * it has a higher version number. This allows you to adjust
 	 * the various data to match the new version number.
 	 */
 	@Override
@@ -69,7 +72,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
+	 * Returns the Database Access Object (DAO) for our 
+	 * SimpleData class. It will create it or just give the cached
 	 * value.
 	 */
 	public Dao<Image, Integer> getDao() throws SQLException {
@@ -80,8 +84,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our Image class. It will
-	 * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
+	 * Returns the RuntimeExceptionDao (Database Access Object)
+	 *  version of a Dao for our Image class. It will
+	 * create it or just give the cached value. 
+	 * RuntimeExceptionDao only through RuntimeExceptions.
 	 */
 	public RuntimeExceptionDao<Image, Integer> getSimpleDataDao() {
 		if (simpleRuntimeDao == null) {

@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -162,15 +163,14 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                           case 0:
                                         	  drawPic(Path + i_1,i_1_infos) ;
                                         	  break ;
-                                        	//  showDialog( ALERT_DIALOG );
+                                        	
                                           case 1:
                                         	  drawPic(Path + i_2,i_2_infos) ;
                                         	  break ;
-                                        	  //  showDialog( ALERT_DIALOG );
-                                          case 3:
+                                        	                                            case 3:
                                         	  drawPic( Path + i_3,i_3_infos) ;
                                         	  break ;
-                                        	//  showDialog( ALERT_DIALOG );
+                                        	
                                           default:
                                         	  
                                         	  // afficher image not found
@@ -315,7 +315,8 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 	        //we choose one in all the above
                 	         
                 	        pic_ch = item ;
-                	        
+                	        // on est sur que 
+                	        SystemClock.sleep(1000) ; 
                 	        Log.i("DRAW PICTURE", "item position ="+pic_ch);
                 	        View mlayout = findViewById(R.id.RelativeLayout1);
                 	        mlayout.setBackgroundDrawable(d) ;
