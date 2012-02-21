@@ -9,8 +9,12 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.view.ViewGroup;
+import android.graphics.Matrix;
+import java.lang.Math.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,6 +34,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -38,10 +46,29 @@ import android.support.v4.content.LocalBroadcastManager;
  * l'image que l'on a trouvÃ© en utilisant la 
  * comparaison des descripteurs
  * 
- * @author olympe kassa & romain proyart 
+ * 
+ * @author olympe kassa & romain proyart
+ * 			IMA5SC Polytech'lille 2012
+ * 
+ * @site https://code.google.com/p/androidopencv 
  * 
  */
 
+
+/*
+ * 
+ * A faire :
+ * 	dialog de choix de l'image retrouvée
+ *  afficher l'image et demander à l'utilisateur si
+ *  c'est la bonne du genre OK ou NEXT.
+ *  A l'utilisateur de choisir !
+ *  
+ *  Au lieu d'afficher les nom des images
+ *  afficher plutot chaque image et demander 
+ *  a l'utilisateur de choisir
+ *  
+ * 
+ */
 
 public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     
@@ -57,6 +84,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
          
          private static final int ALERT_DIALOG = 1;
          private static final int CHOOSE_IMAGE_ID = 0 ;
+         private static final int PICK_IMAGE = 2 ;
          
         String text_to_show ;
 		private String i_1;
@@ -155,26 +183,27 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                           Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 3 = "+ i_3 +
                                         		  "image 3 infos = " +  i_3_infos);
                                           
-                                          showDialog(CHOOSE_IMAGE_ID);
-                                          
-                                          switch(pic_ch)
-                                          {
-                                          
-                                          case 0:
-                                        	  drawPic(Path + i_1,i_1_infos) ;
-                                        	  break ;
-                                        	
-                                          case 1:
-                                        	  drawPic(Path + i_2,i_2_infos) ;
-                                        	  break ;
-                                        	                                            case 3:
-                                        	  drawPic( Path + i_3,i_3_infos) ;
-                                        	  break ;
-                                        	
-                                          default:
-                                        	  
-                                        	  // afficher image not found
-                                          }
+                                                                                    
+                                          showDialog(PICK_IMAGE);
+//                                          
+//                                          switch(pic_ch)
+//                                          {
+//                                          
+//                                          case 0:
+//                                        	  drawPic(Path + i_1,i_1_infos) ;
+//                                        	  break ;
+//                                        	
+//                                          case 1:
+//                                        	  drawPic(Path + i_2,i_2_infos) ;
+//                                        	  break ;
+//                                        	                                            case 3:
+//                                        	  drawPic( Path + i_3,i_3_infos) ;
+//                                        	  break ;
+//                                        	
+//                                          default:
+//                                        	  
+//                                        	  // afficher image not found
+//                                          }
                                           
 //                                                           
                                     } 
@@ -183,7 +212,78 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         mLocalBroadcastManager.registerReceiver(mReceiver, filter);
 
     }
+
     
+    /**
+     * On resize un bitmap pour l'afficher 
+     * à l'utilisateur
+     * 
+     * @param srcBitmap
+     * @param newWidth
+     * @param newHeight
+     * @return
+     */
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+
+    int width = bm.getWidth();
+    Log.i("DRAW PICTURE", "bmp width = "+ width);
+    int height = bm.getHeight();
+    Log.i("DRAW PICTURE", "bmp height = "+ height);
+    
+    float scaleWidth = ((float) newWidth) / width;
+    Log.i("DRAW PICTURE", "scale width = "+ scaleWidth);
+    float scaleHeight = ((float) newHeight) / height;
+    Log.i("DRAW PICTURE", "scale height = "+ scaleHeight);
+
+    // create a matrix for the manipulation
+
+    Matrix matrix = new Matrix();
+
+    // resize the bit map
+
+    matrix.postScale(scaleWidth, scaleHeight);
+
+    // recreate the new Bitmap
+
+    Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+    Log.i("DRAW ALL PICTURE", "resized bmp size is ="+resizedBitmap.getWidth()+"*"+resizedBitmap.getHeight());
+    
+    return resizedBitmap;
+
+    }
+
+
+
+
+
+    
+    public Bitmap drawPict(String nom)
+    {
+    		Bitmap bmp = null ;
+    		File imgFile = new  File(nom);
+            if(imgFile.exists())
+            {
+                Log.i("DRAW ALL PICTURE", "get the layout...");
+                 //   View mlayout = findViewById(R.id.RelativeLayout1);
+
+                Log.i("DRAW ALL PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
+                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                Log.i("DRAW ALL PICTURE", "bmp size is ="+myBitmap.getWidth()+"*"+myBitmap.getHeight());
+                
+                Log.i("DRAW ALL PICTURE", "get drawable...");
+                bmp = myBitmap ;
+               //     mlayout.setBackgroundDrawable(d) ;
+                   
+            }
+            else
+            {
+                    Log.i("DRAW PICTURE", "file doesn't exist...");
+                    
+            }
+    	
+    	return bmp ;
+    }
   
     
     
@@ -318,13 +418,32 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 	        // on est sur que 
                 	        SystemClock.sleep(1000) ; 
                 	        Log.i("DRAW PICTURE", "item position ="+pic_ch);
-                	        View mlayout = findViewById(R.id.RelativeLayout1);
+                	        //View mlayout = findViewById(R.id.RelativeLayout1);
+                	        View mlayout = findViewById(R.id.imageView1);
                 	        mlayout.setBackgroundDrawable(d) ;
                 	        
                 	    }
                 	});
+                	
+                	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+         
+                        // do something when the button is clicked
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Toast.makeText(getApplicationContext(), "'Yes' button clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                	
+                	builder.setNegativeButton("Next", new DialogInterface.OnClickListener() {
+         
+                        // do something when the button is clicked
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Toast.makeText(getApplicationContext(), "'No' button clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                	
                 	builder.create().show();
-                    
+                    dialog = builder.create() ;
+                	
                 case ALERT_DIALOG:
                     // do the work to define the alert Dialog
                 	ContextThemeWrapper ctw = new ContextThemeWrapper( this, R.style.MyTheme );
@@ -347,10 +466,58 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                     
                     	dialog = builder1.create();
                     	dialog.show() ;
+                    	
+                case PICK_IMAGE :
+                	
+                	
+                	Dialog d = new Dialog(AnswerActivity.this);
+                	
+            		d.setContentView(R.layout.choose);
+            		d.setTitle( "       Is it the right image ?" ) ;
+            		
+            		
+            		
+            		final ImageView image = (ImageView) d.findViewById(R.id.image);
+            		
+            		Bitmap bp = drawPict(Path + i_1) ;
+            		Log.i("DRAW PICTURE", "old bmp size is ="+bp.getWidth()+"*"+bp.getHeight());
                     
+            		final int newHeight = 208 ;
+            		final int newWidth = 308 ;
+            		
+            		Log.i("DRAW PICTURE", "new bmp size is ="+newHeight+"*"+newWidth);
+            		
+            		Bitmap bp_new = getResizedBitmap(bp,newHeight, newWidth);
+            		//Log.i("DRAW PICTURE", "new bmp size is ="+bp_new.getWidth()+"*"+bp_new.getHeight());
                     
-                default:
-                	dialog = super.onCreateDialog( id );
+            		Button yes = (Button) d.findViewById(R.id.yes);
+                    yes.setOnClickListener(new OnClickListener() {
+                    @Override
+                        public void onClick(View v) {
+                    	 
+                    	// showDialog( ALERT_DIALOG );
+                        }
+                    });
+            		
+                    Button next = (Button) d.findViewById(R.id.next);
+                    next.setOnClickListener(new OnClickListener() {
+                    @Override
+                        public void onClick(View v) {
+                    	 
+                    	        
+	                    		Bitmap bp = drawPict(Path + i_2) ;
+	                    		Bitmap bp_new = getResizedBitmap(bp,newHeight, newWidth);
+	                    		image.setImageBitmap(bp_new);
+	                    		
+      	
+                        }
+                    });
+            		
+            		image.setImageBitmap(bp_new);
+            		d.show();
+                	
+            		dialog = d ;
+     
                 }
                 
                 return dialog;

@@ -37,21 +37,23 @@ import android.util.Log;
 
 /**
  * Ce service permet d'effectuer les calculs sur l'image
- * que l'on a captur√© avec la camera OpenCV. On proc√®de au
+ * que l'on a capturÈ avec la camera OpenCV. On proc√®de au
  * calculs suivants :
  * 
  * 	- calcul des histogrammes
  * 	- Detections des points d'interets
  * 	- Calcul des descripteurs des points d'interets
  * 
- * 
  * @author olympe kassa & romain proyart
- *
+ * 			IMA5SC Polytech'lille 2012
+ * 
+ * @site https://code.google.com/p/androidopencv
+ * 
  */
 
 
 /*
- * Une subtilit√© aurait √©t√© de cr√©er une classe calcul 
+ * Une subtilitÈ aurait ÈtÈ de crÈer une classe calcul 
  * 
  */
 
@@ -76,18 +78,18 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
         static final String ACTION_UPDATE = "UPDATE";
         static final String ACTION_STOPPED = "STOPPED";
 
-        static final String ACTION_FIRST = "FIRST";
-        static final String ACTION_SECOND = "SECOND";
-        static final String ACTION_THIRD= "THIRD";
         
         
         /**
-         * Ce handler est utilis√© pour envoyer 
+         * Ce handler est utilisÈ pour envoyer 
          * le nom de l'image trouv√©e par la 
          * comparaison de l'hostogramme, des descripteurs
          * ...
-         * 
-         * @author olympe kassa
+         * 		         
+		 * @author olympe kassa & romain proyart
+		 * 			IMA5SC Polytech'lille 2012
+		 * 
+		 * @site https://code.google.com/p/androidopencv
          * 
          */
         
@@ -105,8 +107,11 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
         /**
          * Convert a serializable object to byteArray
          * for the database 
-         * @param obj
-         * @return
+		 * 
+		 * @author olympe kassa & romain proyart
+		 * 			IMA5SC Polytech'lille 2012
+		 * 
+		 * @site https://code.google.com/p/androidopencv
          */
                 
         
@@ -191,7 +196,7 @@ public class InfosImageService extends OrmLiteBaseService<DatabaseHelper>  {
                 
                 if ( img.empty() == false)
                 {       
-                   intent.putExtra("DETECTFEATURES", "image bien charg√©e... ");
+                   intent.putExtra("DETECTFEATURES", "image bien chargÈe... ");
                sendBroadcast(intent);
                 }
                 return img;     
