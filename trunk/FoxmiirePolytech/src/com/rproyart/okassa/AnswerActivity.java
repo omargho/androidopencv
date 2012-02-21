@@ -91,8 +91,16 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 		private String i_2;
 		private String i_3;
 		
+		String i_1_infos ;
+		String i_2_infos ;
+		String i_3_infos ;
+		
 		int pic_ch ;
 		Drawable d ;
+		int cpt = 0 ;
+		
+  		Bitmap bp ;
+		Bitmap bp_new ;
          
         /** Called when the activity is first created. */
     @Override
@@ -131,10 +139,9 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         ((Button) findViewById( R.id.button1 ) )
                 .setOnClickListener( new OnClickListener()
                 {
-
                         public void onClick(View v) {
                                 // TODO Auto-generated method stub
-                                showDialog( ALERT_DIALOG );
+                                showDialog(ALERT_DIALOG );
                         }
 
                 }
@@ -169,41 +176,23 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                            * On dessine l'image que l'on a trouvé
                                            */
                                           i_1 = intent.getStringExtra("image_first_name") ;
-                                          String i_1_infos = intent.getStringExtra("image_first_infos") ;
+                                          i_1_infos = intent.getStringExtra("image_first_infos") ;
                                           Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 1 = "+ i_1 +
                                         		  "image 1 infos ="+ i_1_infos);
                                         
                                           i_2 = intent.getStringExtra("image_second_name") ;
-                                          String i_2_infos = intent.getStringExtra("image_second_infos") ;
+                                          i_2_infos = intent.getStringExtra("image_second_infos") ;
                                           Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 2 = "+ i_2 +
                                         		  "image 2 infos =" + i_2_infos);
                                         
                                           i_3 = intent.getStringExtra("image_third_name") ;
-                                          String i_3_infos = intent.getStringExtra("image_third_infos") ;
+                                          i_3_infos = intent.getStringExtra("image_third_infos") ;
                                           Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 3 = "+ i_3 +
                                         		  "image 3 infos = " +  i_3_infos);
                                           
                                                                                     
                                           showDialog(PICK_IMAGE);
-//                                          
-//                                          switch(pic_ch)
-//                                          {
-//                                          
-//                                          case 0:
-//                                        	  drawPic(Path + i_1,i_1_infos) ;
-//                                        	  break ;
-//                                        	
-//                                          case 1:
-//                                        	  drawPic(Path + i_2,i_2_infos) ;
-//                                        	  break ;
-//                                        	                                            case 3:
-//                                        	  drawPic( Path + i_3,i_3_infos) ;
-//                                        	  break ;
-//                                        	
-//                                          default:
-//                                        	  
-//                                        	  // afficher image not found
-//                                          }
+
                                           
 //                                                           
                                     } 
@@ -285,6 +274,54 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     	return bmp ;
     }
   
+  
+    public String infosImage (String infos)
+    {
+        /*
+         * on recupère le text correspondant à l'image
+         * 
+         */
+         
+    	StringBuilder strBuild = new StringBuilder();
+       
+        String line; 
+               Log.i("DRAW PICTURE", "reading file for images titles");
+        
+                           // get input stream for text
+                           // infos = Path_infos+infos_file stored in database
+                           // Path_infos = InfosFolder/ 
+                        
+                       try {
+                           
+                          Log.i("DRAW PICTURE", "get the file of infos...");
+                          BufferedReader  br = new BufferedReader(
+                                           new InputStreamReader(getAssets().open(infos)));
+                          
+                         Log.i("DRAW PICTURE", "read file of infos...");
+                                       
+										while((line = br.readLine()) != null) 
+                                        {
+                                                
+                                                strBuild.append(line+"\n");
+                                            
+                                       
+                                        }
+                                } 
+                                catch (IOException e) 
+                                {
+                                       // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                } 
+                    
+                        // on affiche les infos contenues dans 
+                        // le fichier d'infos de l'image
+                                
+                       
+                        
+                        Log.i("DRAW PICTURE", "infos to show to UI ="+strBuild);        
+                                                
+                        return strBuild.toString() ;
+    }
     
     
     /**
@@ -314,7 +351,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         if(imgFile.exists())
         {
             Log.i("DRAW PICTURE", "get the layout...");
-             //   View mlayout = findViewById(R.id.RelativeLayout1);
+                View mlayout = findViewById(R.id.RelativeLayout1);
 
             Log.i("DRAW PICTURE", "decoding the file from path= "+imgFile.getAbsolutePath());
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -323,7 +360,7 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             Log.i("DRAW PICTURE", "get drawable...");
                 d =new BitmapDrawable(myBitmap);
                 Log.i("DRAW PICTURE", "drawable visibility is  ="+ d.isVisible());
-           //     mlayout.setBackgroundDrawable(d) ;
+                mlayout.setBackgroundDrawable(d) ;
                
         }
         else
@@ -370,16 +407,13 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                         text_to_show = strBuild.toString() ;
                         
                         Log.i("DRAW PICTURE", "infos to show to UI ="+strBuild);        
-                        //textView.setText(strBuild) ;
+                        textView.setText(strBuild) ;
                         
                         // sending data to enable button clickable
                         Intent iBis = new Intent(ACTION_BUTTON);
                         iBis.putExtra("button_enable", "false");
                         Log.i("ANSWER BUTTON ", "true enable button");
                         mLocalBroadcastManager.sendBroadcast(iBis);
-                         
-                        
-              
     }
 
     
@@ -399,53 +433,14 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 String img2 = i_2;
                 String img3 = i_3;
                 Dialog dialog = null;
+                Bitmap curr_bmp ;
                 
                 switch(id) 
                 {
-                case CHOOSE_IMAGE_ID:
-                    // do the work to define the choose Dialog
-                	final CharSequence[] items = {img1, img2, img3};
-
-                	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                	builder.setTitle("choose the closest image");
-                	builder.setItems(items, new DialogInterface.OnClickListener() {
-                	    public void onClick(DialogInterface dialog, int item) {
-                	        Toast.makeText(getApplicationContext(), items[item], 
-                	        		Toast.LENGTH_SHORT).show();
-                	        //we choose one in all the above
-                	         
-                	        pic_ch = item ;
-                	        // on est sur que 
-                	        SystemClock.sleep(1000) ; 
-                	        Log.i("DRAW PICTURE", "item position ="+pic_ch);
-                	        //View mlayout = findViewById(R.id.RelativeLayout1);
-                	        View mlayout = findViewById(R.id.imageView1);
-                	        mlayout.setBackgroundDrawable(d) ;
-                	        
-                	    }
-                	});
-                	
-                	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-         
-                        // do something when the button is clicked
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            Toast.makeText(getApplicationContext(), "'Yes' button clicked", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                	
-                	builder.setNegativeButton("Next", new DialogInterface.OnClickListener() {
-         
-                        // do something when the button is clicked
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            Toast.makeText(getApplicationContext(), "'No' button clicked", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                	
-                	builder.create().show();
-                    dialog = builder.create() ;
                 	
                 case ALERT_DIALOG:
                     // do the work to define the alert Dialog
+                	
                 	ContextThemeWrapper ctw = new ContextThemeWrapper( this, R.style.MyTheme );
                     AlertDialog.Builder builder1= new AlertDialog.Builder( ctw );
                     builder1.setMessage(text)
@@ -464,60 +459,91 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                             } 
                     );
                     
-                    	dialog = builder1.create();
-                    	dialog.show() ;
+                   dialog = builder1.create();
+                   //dialog.show() ;
                     	
                 case PICK_IMAGE :
                 	
-                	
-                	Dialog d = new Dialog(AnswerActivity.this);
+                	final Dialog d = new Dialog(AnswerActivity.this);
                 	
             		d.setContentView(R.layout.choose);
             		d.setTitle( "       Is it the right image ?" ) ;
             		
-            		
-            		
             		final ImageView image = (ImageView) d.findViewById(R.id.image);
             		
-            		Bitmap bp = drawPict(Path + i_1) ;
+            		bp = drawPict(Path + i_1) ;
             		Log.i("DRAW PICTURE", "old bmp size is ="+bp.getWidth()+"*"+bp.getHeight());
                     
             		final int newHeight = 208 ;
             		final int newWidth = 308 ;
             		
+      
+            		
             		Log.i("DRAW PICTURE", "new bmp size is ="+newHeight+"*"+newWidth);
             		
-            		Bitmap bp_new = getResizedBitmap(bp,newHeight, newWidth);
+            		bp_new = getResizedBitmap(bp,newHeight, newWidth);
             		//Log.i("DRAW PICTURE", "new bmp size is ="+bp_new.getWidth()+"*"+bp_new.getHeight());
                     
+            		text_to_show = infosImage(i_1_infos) ;
+            		
             		Button yes = (Button) d.findViewById(R.id.yes);
                     yes.setOnClickListener(new OnClickListener() {
                     @Override
                         public void onClick(View v) {
-                    	 
-                    	// showDialog( ALERT_DIALOG );
+                    	                   	
+                    	View mlayout = findViewById(R.id.RelativeLayout1);
+                    	                    	
+             	        mlayout.setBackgroundDrawable(new BitmapDrawable(bp)) ;
+                    	d.dismiss();
                         }
                     });
             		
-                    Button next = (Button) d.findViewById(R.id.next);
-                    next.setOnClickListener(new OnClickListener() {
+                    Button one = (Button) d.findViewById(R.id.one);
+                    one.setOnClickListener(new OnClickListener() {
                     @Override
                         public void onClick(View v) {
-                    	 
-                    	        
-	                    		Bitmap bp = drawPict(Path + i_2) ;
-	                    		Bitmap bp_new = getResizedBitmap(bp,newHeight, newWidth);
-	                    		image.setImageBitmap(bp_new);
-	                    		
-      	
+                    				
+                    				text_to_show = infosImage(i_1_infos) ;
+                    				bp = drawPict(Path + i_1) ;
+    	                    		bp_new = getResizedBitmap(bp,newHeight, newWidth);
+    	                    		image.setImageBitmap(bp_new);
+    	                    		
                         }
                     });
             		
+                    Button two = (Button) d.findViewById(R.id.two);
+                    two.setOnClickListener(new OnClickListener() {
+                    @Override
+                        public void onClick(View v) {
+                    				
+                    				text_to_show = infosImage(i_2_infos) ;
+                    				bp = drawPict(Path + i_2) ;
+    	                    		bp_new = getResizedBitmap(bp,newHeight, newWidth);
+    	                    		image.setImageBitmap(bp_new);
+    	                    		
+                        }
+                    });
+                    
+                   
+                    Button three = (Button) d.findViewById(R.id.three);
+                    three.setOnClickListener(new OnClickListener() {
+                    @Override
+                        public void onClick(View v) {
+                    				
+                    				text_to_show = infosImage(i_3_infos) ;
+                    				bp = drawPict(Path + i_3) ;
+    	                    		bp_new = getResizedBitmap(bp,newHeight, newWidth);
+    	                    		image.setImageBitmap(bp_new);
+    	                    		
+                        }
+                    });
+                    
             		image.setImageBitmap(bp_new);
-            		d.show();
-                	
+            		                	
             		dialog = d ;
-     
+            		
+            		//dialog.show();
+   
                 }
                 
                 return dialog;
