@@ -46,5 +46,24 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/white" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="14dp"
+        android:src="@drawable/ic_logo_fox" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:src="@drawable/ic_noce_lifl" />
+
 </RelativeLayout>
    

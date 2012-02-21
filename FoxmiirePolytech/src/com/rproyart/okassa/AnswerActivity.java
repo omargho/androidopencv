@@ -7,15 +7,11 @@ import java.io.InputStreamReader;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.view.LayoutInflater;
+import android.widget.ProgressBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.view.ViewGroup;
 import android.graphics.Matrix;
-import java.lang.Math.*;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -24,21 +20,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
 import android.support.v4.content.LocalBroadcastManager;
 
 /**
@@ -175,7 +163,11 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                                           /*
                                            * On dessine l'image que l'on a trouvé
                                            */
-                                          i_1 = intent.getStringExtra("image_first_name") ;
+                                	  
+                                	  	  ProgressBar progressbar = (ProgressBar)findViewById(R.id.progressBar1);
+                                	  	  progressbar.setVisibility(View.INVISIBLE);
+                                          
+                                	  	  i_1 = intent.getStringExtra("image_first_name") ;
                                           i_1_infos = intent.getStringExtra("image_first_infos") ;
                                           Log.i("ANSWER ACTIVITY TO MAIN ACTIVITY", "image 1 = "+ i_1 +
                                         		  "image 1 infos ="+ i_1_infos);
