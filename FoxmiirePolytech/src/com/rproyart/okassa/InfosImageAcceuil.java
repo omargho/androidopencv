@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.Window;
 
 /**
- * ActivitÃ© d'acceuil de notre application
- * on touche l'Ã©cran pour ouvrir la
+ * Activité d'acceuil de notre application
+ * on touche l'écran pour ouvrir la
  * camera
  * 
  * @author olympe kassa & romain proyart
+ * 			IMA5SC Polytech'lille 2012
  * 
+ * @site https://code.google.com/p/androidopencv
  */
 
 public class InfosImageAcceuil extends Activity {

@@ -53,6 +53,8 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
  * 
  * @author olympe kassa & romain proyart
  * 			IMA5SC Polytech'lille 2012
+ * 
+ * @site https://code.google.com/p/androidopencv
  *
  */
 
@@ -61,7 +63,6 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
         String MAIN  ;
         LayoutInflater controlInflater = null;
         Message message ;
-       // MyReceiver myReceiver;
         public static Mat img;
         public ProgressDialog mProgressDialog;
         public static boolean click ;
@@ -95,19 +96,12 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
          List<Integer> channels = new ArrayList<Integer>();
          List<Integer> histSize = new ArrayList<Integer>();
          List<Float> range = new ArrayList<Float>();           
-                
          
-         
-         images.add(img);
-         
+         images.add(img);         
          channels.add(0);
-         
          histSize.add(50);
-         
          range.add(0.0f);
          range.add(256.0f);
-         
-                 
          
          Mat hist = new Mat();
          Log.i("SERVICE HISTOGRAMS ACTIVITY", "computing begin...");
@@ -168,10 +162,6 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
          
  }
  
- /*
-  * idée utiliser le storage interne pour stocker les images 
-  * 
-  */
  public String loadDataImageFromAsset(String image) 
  {
         // utiliser storage  
@@ -182,7 +172,6 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
         try {
                         
                 // get input stream of image
-                    //FileOutputStream fos;
                         InputStream ims = getAssets().open(Path_Image + image) ;
                 
                         File mydir = getBaseContext().getDir("asset_to_local", Context.MODE_PRIVATE); //Creating an internal dir;
@@ -195,17 +184,13 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
                 byte[] data = new byte[ims.available()];
                 
                 Log.i("LOAD DATA FROM ASSETS", "bmp is decoded");                       
-            //File file = new File(_path + "/"+ "todatabase.jpg");
                     
             try 
             {
-                //fos = new FileOutputStream(file);
                 ims.read(data);
-                //fos.write(data);
                 out.write(data);
                 ims.close();
                 out.close() ;
-                //fos.close();
             } 
             catch (FileNotFoundException e) {
                 Log.e("convert image", "FileNotFoundException", e);
@@ -289,6 +274,12 @@ public class InfosImageCamera extends OrmLiteBaseActivity<DatabaseHelper> {
          * 
          * @param image_path
          * @param image_name
+         * 
+         * 
+		 * @author olympe kassa & romain proyart
+		 * 			IMA5SC Polytech'lille 2012
+		 * 
+		 * @site https://code.google.com/p/androidopencv
          */
  
 public void PopulateDataBaseImage(String image_path, String image_name,String infos_Image_Path)
@@ -401,7 +392,6 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
         Log.i("ACTIVITY CREATE", "reglage OK"); 
         
         Log.i("ACTIVITY CREATE", "POPULATING THE DATABASE");
-        //this.PopulateDataBase() ;
                 
     }
     
@@ -410,18 +400,16 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
     @Override
         protected void onStart() {
                 // TODO Auto-generated method stub
-        Log.i("ACTIVITY START", "start");
-        super.onStart();
-                
-        Log.i("ACTIVITY START", "receiver set up");
-         //myReceiver = new MyReceiver();
+	        Log.i("ACTIVITY START", "start");
+	        super.onStart();
+	                
+	        Log.i("ACTIVITY START", "receiver set up");
                    
             Log.i("ACTIVITY START", "set up filter of intents");
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(InfosImageService.MY_ACTION);
             
             Log.i("ACTIVITY START", "we register to receiver");
-          //registerReceiver(myReceiver, intentFilter);
                  
             // var for button : enable or disable
             enable = true ;
@@ -526,9 +514,6 @@ public void PopulateDataBaseImage(String image_path, String image_name,String in
          return false;
   }
  
-
-    
-    
 
     @Override
     protected void onStop() {

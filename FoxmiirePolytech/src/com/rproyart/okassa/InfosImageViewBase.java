@@ -121,9 +121,17 @@ public abstract class InfosImageViewBase extends SurfaceView implements SurfaceH
 	            	
 	            	/**
 	            	 * On capture la photo que l'on enregistre dans la 
-	            	 * carte mÃ©moire il a fallut dans un premier temps 
+	            	 * carte mémoire il a fallut dans un premier temps 
 	            	 * rajouter le droit de lire et d'ecrire dans la 
 	            	 * SD au manifest.xml
+	            	 * 
+	            	 * 
+	            	 * 	 @author olympe kassa & romain proyart
+					 * 		IMA5SC Polytech'lille 2012
+					 * 
+					 * @site https://code.google.com/p/androidopencv
+			         * 
+			   
 	            	 */
 	            	
 	                if(InfosImageCamera.click == true)
@@ -137,7 +145,7 @@ public abstract class InfosImageViewBase extends SurfaceView implements SurfaceH
 	                    
 	                    /*
 	                     * on utilise le storage interne pour preserver 
-	                     * les donnÃ©es 
+	                     * les données 
 	                     * 
 	                     */
 	                    
