@@ -441,27 +441,19 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 case ALERT_DIALOG:
                     // do the work to define the alert Dialog
                 	
-                	ContextThemeWrapper ctw = new ContextThemeWrapper( this, R.style.MyTheme );
-                    AlertDialog.Builder builder1= new AlertDialog.Builder( ctw );
-                    builder1.setMessage(text)
-                        .setTitle( "Informations sur l'image" )
-                            .setCancelable( false )
-                            .setPositiveButton( "Close",
-                                            new DialogInterface.OnClickListener()
-                                            {
+                	final Dialog d_ = new Dialog(AnswerActivity.this);
 
-                                                    public void onClick(DialogInterface dialog,
-                                                                    int which) {
-                                                            // TODO Auto-generated method stub
-                                                            dialog.dismiss();
-                                                    }
-                                                    
-                                            } 
-                    );
-                    
-                   dialog = builder1.create();
-                   //dialog.show() ;
-                    	
+                	d_.setContentView(R.layout.infosedit);
+                	d_.setTitle("Informations sur l'image");
+
+                	TextView infos = (TextView) d_.findViewById(R.id.text);
+                	infos.setText(text);
+                	ImageView im = (ImageView) d_.findViewById(R.id.mini_image);
+                	
+                	im.setBackgroundDrawable(new BitmapDrawable(getResizedBitmap(bp,72,72))) ;
+                	
+                	dialog = d_ ;
+                    break ;	
                 case PICK_IMAGE :
                 	
                 	final Dialog d = new Dialog(AnswerActivity.this);
@@ -476,8 +468,6 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                     
             		final int newHeight = 208 ;
             		final int newWidth = 308 ;
-            		
-      
             		
             		Log.i("DRAW PICTURE", "new bmp size is ="+newHeight+"*"+newWidth);
             		
@@ -543,7 +533,10 @@ public class AnswerActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             		dialog = d ;
             		
             		//dialog.show();
-   
+            		break ;
+            		
+                default:
+                    dialog = null;
                 }
                 
                 return dialog;
