@@ -43,6 +43,7 @@ public class InfosImageAcceuil extends Activity {
 
 		Log.i("ACCEUIL ACTIVITY CREATE", "set ontouch listener");
 		myView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
 			public boolean onTouch(View myView, MotionEvent event) {
 
 				Log.i("ACCEUIL ACTIVITY CREATE", "intent activity for camera");
